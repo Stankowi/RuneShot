@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: RedDoor
-  m_Shader: {fileID: 4800000, guid: 7710c890fe17b8f43bfb36606f6c322c, type: 3}
+  m_Name: ConcreteFloorYellow
+  m_Shader: {fileID: 2, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: []
   m_CustomRenderQueue: -1
   m_SavedProperties:
@@ -17,26 +17,27 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: 7819172fcf274f44382302040a469c78, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _RefractTex
+          name: _BumpMap
         second:
-          m_Texture: {fileID: 8900000, guid: 51e3f49dbd110a7011005aba44295342, type: 2}
+          m_Texture: {fileID: 2800000, guid: 2b7730b04660ac542bf37bed8a6a1ee5, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+    m_Floats:
       data:
         first:
-          name: _ReflectTex
-        second:
-          m_Texture: {fileID: 8900000, guid: e046d481f9699f9419c5e23698b1514f, type: 2}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-    m_Floats: {}
+          name: _Shininess
+        second: .078125
     m_Colors:
       data:
         first:
           name: _Color
-        second: {r: .203921571, g: 0, b: 0, a: 1}
+        second: {r: .993712008, g: 1, b: .544117689, a: 1}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: .5, g: .5, b: .5, a: 1}
