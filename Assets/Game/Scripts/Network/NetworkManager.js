@@ -8,6 +8,7 @@ private var refreshing: boolean;
 private var isInitialized: boolean;
 private var isSinglePlayer: boolean;
 private var playerSpawnPoints: CharacterSpawnPoint[];
+private var playerName: String;
 
 //
 // public helper functions
@@ -29,10 +30,9 @@ function IsSinglePlayer(): boolean {
 
 function Start () {
     
-    playerPrefab = Resources.Load("Characters/PlayerCharacter", GameObject);
-    charModelPrefab = Resources.Load("Characters/CharacterGraphics", GameObject);
-    
     playerSpawnPoints = GameObject.FindObjectsOfType(CharacterSpawnPoint);
+    
+    playerName = PlayerPrefs.GetString("Player Name", System.Environment.UserName);
 }
 
 function Update () {
@@ -44,26 +44,39 @@ function Update () {
 function OnGUI() {
 
     if( !isInitialized ) {
+        var y: int = 10;
         
-        if( GUI.Button(Rect(10, 10, 100, 30), "Single Player") ) {
+        GUI.Label(Rect(20, y, 100, 20), "Player Name:");
+        var newName: String = GUI.TextField(Rect(120, y, 200, 20), playerName, 24);
+        
+        if( newName != playerName ) {
+            playerName = newName;
+            PlayerPrefs.SetString("Player Name", playerName);
+        }
+        
+        y += 30;
+        if( GUI.Button(Rect(10, y, 100, 30), "Single Player") ) {
             isInitialized = true;
             isSinglePlayer = true;
             startSinglePlayer();
         }
     
-        if( GUI.Button(Rect(10, 50, 100, 30), "Start Server") ) {
+        y += 40;
+        if( GUI.Button(Rect(10, y, 100, 30), "Start Server") ) {
             isInitialized = true;
             isSinglePlayer = false;
             startServer();
         }
 
-        if( GUI.Button(Rect(10, 90, 100, 30), "List Servers") ) {
+        y += 40;
+        if( GUI.Button(Rect(10, y, 100, 30), "List Servers") ) {
             refreshHostList();
         }
         
         if( hostData ) {    
             for( var i:int = 0; i < hostData.length; i++ ) {
-                if( GUI.Button(Rect(10, 130 + (40*i), 300, 30), hostData[i].gameName) ) {
+                y += 40;
+                if( GUI.Button(Rect(10, y, 300, 30), hostData[i].gameName) ) {
                     isInitialized = true;                    
                     isSinglePlayer = false;
                     connectToServer( hostData[i] );
@@ -106,7 +119,7 @@ function startServer() {
     Network.InitializeServer(32, 25000, !Network.HavePublicAddress);
     
     // notify the Unity Global Service about me
-    MasterServer.RegisterHost(gameName, System.Environment.MachineName, "Game Jam");
+    MasterServer.RegisterHost(gameName, System.Environment.MachineName + " - " + playerName, "Game Jam");
 }
 
 function OnServerInitialized() {
@@ -133,7 +146,18 @@ function OnPlayerDisconnected( player: NetworkPlayer ) {
 
 // connects as a Client to the specified Server
 function connectToServer( host: HostData ) {
+
+    var username = playerName.Trim();
     
+    if( username.Length < 1 ) {
+        username = System.Environment.UserName;
+    }
+    
+    if( username != playerName ) {
+        playerName = username;
+        PlayerPrefs.SetString("Player Name", playerName);
+    }
+
     Network.Connect( host );
 }
 
