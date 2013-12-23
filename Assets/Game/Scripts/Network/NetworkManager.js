@@ -9,6 +9,8 @@ private var isInitialized: boolean;
 private var isSinglePlayer: boolean;
 private var playerSpawnPoints: CharacterSpawnPoint[];
 private var playerName: String;
+private var hostname: String = "localhost";
+private var hostport: String = "25000";
 
 //
 // public helper functions
@@ -67,6 +69,16 @@ function OnGUI() {
             isSinglePlayer = false;
             startServer();
         }
+    
+        y += 40;
+        if( GUI.Button(Rect(10, y, 100, 30), "Connect To:") ) {
+            isInitialized = true;
+            isSinglePlayer = false;
+            connectToServer( hostname, int.Parse(hostport) );
+        }
+        
+        hostname = GUI.TextField(Rect(120, y+5, 200, 20), hostname, 24);
+        hostport = GUI.TextField(Rect(340, y+5, 50, 20), hostport, 5);
 
         y += 40;
         if( GUI.Button(Rect(10, y, 100, 30), "List Servers") ) {
@@ -79,7 +91,7 @@ function OnGUI() {
                 if( GUI.Button(Rect(10, y, 300, 30), hostData[i].gameName) ) {
                     isInitialized = true;                    
                     isSinglePlayer = false;
-                    connectToServer( hostData[i] );
+                    connectToServer( hostData[i].ip.Join("."), hostData[i].port );
                 }
             }
         }
@@ -125,6 +137,8 @@ function startServer() {
 function OnServerInitialized() {
 
     Debug.Log("Server Initialized");
+    
+    InitializeServerSystems();
 }
 
 function OnPlayerConnected( player: NetworkPlayer ) {
@@ -139,13 +153,18 @@ function OnPlayerDisconnected( player: NetworkPlayer ) {
     Network.RemoveRPCs(player);
     Network.DestroyPlayerObjects(player);
 }
-    
+
+// This is the location where game systems should add area initializtion hooks
+function InitializeServerSystems() {
+
+}
+       
 //
 // Client functions
 //
 
 // connects as a Client to the specified Server
-function connectToServer( host: HostData ) {
+function connectToServer( hostname: String, port: int ) {
 
     var username = playerName.Trim();
     
@@ -158,7 +177,7 @@ function connectToServer( host: HostData ) {
         PlayerPrefs.SetString("Player Name", playerName);
     }
 
-    Network.Connect( host );
+    Network.Connect( hostname, port );
 }
 
 function OnConnectedToServer() {
