@@ -4,11 +4,11 @@ private var networkManager: NetworkManager;
 private var controller : FPSInputController;
 public var keyInventory : KeyInventory;
 private var powerCalcStart : int = 0;
-var bouncyGranade: GameObject;
+private var bouncyGranade: GameObject;
 
 function Start() {
     networkManager = GameObject.FindObjectOfType(NetworkManager);
-}
+    bouncyGranade = Resources.Load("Guns/BouncyGranade", GameObject);}
 
 function Awake () {
     keyInventory = GetComponent(KeyInventory);
