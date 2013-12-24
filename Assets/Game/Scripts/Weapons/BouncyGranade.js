@@ -10,7 +10,7 @@ function Update() {
 
 function OnCollisionEnter(collision : Collision) {
     var other: GameObject = collision.gameObject;
-    if (other.tag == "Character") {
+    if (other.tag == "Player") {
         Explode();
     } else if (other != lastCollider) {
         collisions += 1;
@@ -36,7 +36,7 @@ function GetDamage() {
      
      var damage: int = GetDamage();
      for(var hit in colliders) {
-        if(hit.gameObject.tag == "Character") {
+        if(hit.gameObject.tag == "Player") {
             //hit.rigidbody.AddExplosionForce(power, transform.position, damageRadius, 3.0);
             hit.gameObject.GetComponent("Health").ResolveDamage(damage);
             
