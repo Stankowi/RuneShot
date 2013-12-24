@@ -62,7 +62,7 @@ Camera:
   m_OcclusionCulling: 1
 --- !u!81 &8100000
 AudioListener:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}

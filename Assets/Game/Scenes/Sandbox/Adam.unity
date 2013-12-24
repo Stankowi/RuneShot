@@ -625,7 +625,20 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 100002, guid: 6dfa6cfd3ea65a047a2a16e0c2b6e224, type: 2}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 6500002, guid: 6dfa6cfd3ea65a047a2a16e0c2b6e224, type: 2}
+      propertyPath: m_Size.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6500000, guid: 6dfa6cfd3ea65a047a2a16e0c2b6e224, type: 2}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: 6dfa6cfd3ea65a047a2a16e0c2b6e224, type: 2}
   m_RootGameObject: {fileID: 1946607407}
   m_IsPrefabParent: 0
@@ -901,6 +914,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 648630835}
   - 65: {fileID: 648630834}
+  - 65: {fileID: 648630836}
   - 114: {fileID: 648630833}
   m_Layer: 8
   m_Name: RedDoor
@@ -947,6 +961,19 @@ Transform:
   m_Children:
   - {fileID: 1599651732}
   m_Father: {fileID: 1865551365}
+--- !u!65 &648630836
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2a57d0b13896b884aa2c2cf4f7e87fbc,
+    type: 2}
+  m_PrefabInternal: {fileID: 553803439}
+  m_GameObject: {fileID: 648630832}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &721620542
 GameObject:
   m_ObjectHideFlags: 0
@@ -1207,6 +1234,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 904921782}
   - 65: {fileID: 904921784}
+  - 65: {fileID: 904921786}
   - 114: {fileID: 904921783}
   m_Layer: 8
   m_Name: BlueDoor
@@ -1252,6 +1280,19 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &904921786
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 6dfa6cfd3ea65a047a2a16e0c2b6e224,
+    type: 2}
+  m_PrefabInternal: {fileID: 1337652019}
+  m_GameObject: {fileID: 904921781}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &961313437
 GameObject:
@@ -1320,6 +1361,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 966002006}
   - 65: {fileID: 966002005}
+  - 65: {fileID: 966002007}
   - 114: {fileID: 966002004}
   m_Layer: 8
   m_Name: RedDoor
@@ -1366,6 +1408,19 @@ Transform:
   m_Children:
   - {fileID: 1992959081}
   m_Father: {fileID: 1865551365}
+--- !u!65 &966002007
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2a57d0b13896b884aa2c2cf4f7e87fbc,
+    type: 2}
+  m_PrefabInternal: {fileID: 1280343281}
+  m_GameObject: {fileID: 966002003}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1002490091
 GameObject:
   m_ObjectHideFlags: 0
@@ -1701,7 +1756,8 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: 6dfa6cfd3ea65a047a2a16e0c2b6e224, type: 2}
   m_RootGameObject: {fileID: 904921781}
   m_IsPrefabParent: 0
@@ -1864,7 +1920,7 @@ GameObject:
   - 4: {fileID: 1550050672}
   m_Layer: 0
   m_Name: BlueDoors
-  m_TagString: Untagged
+  m_TagString: BlueDoor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1879,8 +1935,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1946607408}
   - {fileID: 904921782}
+  - {fileID: 1946607408}
   m_Father: {fileID: 263357375}
 --- !u!1 &1599651731
 GameObject:
@@ -1975,6 +2031,10 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 4351c99276712a142a34c171f734eade, type: 2}
+      propertyPath: color
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4351c99276712a142a34c171f734eade, type: 2}
   m_RootGameObject: {fileID: 2013242324}
@@ -2061,6 +2121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae818e0b907a0014bb339e4fb4c35932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  color: 0
 --- !u!65 &1763142225
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2084,7 +2145,7 @@ GameObject:
   - 4: {fileID: 1865551365}
   m_Layer: 0
   m_Name: RedDoors
-  m_TagString: Untagged
+  m_TagString: RedDoor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2100,9 +2161,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1877809538}
+  - {fileID: 966002006}
   - {fileID: 1986806119}
   - {fileID: 648630835}
-  - {fileID: 966002006}
   m_Father: {fileID: 263357375}
 --- !u!1 &1877809535
 GameObject:
@@ -2113,6 +2174,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1877809538}
   - 65: {fileID: 1877809537}
+  - 65: {fileID: 1877809539}
   - 114: {fileID: 1877809536}
   m_Layer: 8
   m_Name: RedDoor
@@ -2159,6 +2221,19 @@ Transform:
   m_Children:
   - {fileID: 2073957000}
   m_Father: {fileID: 1865551365}
+--- !u!65 &1877809539
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2a57d0b13896b884aa2c2cf4f7e87fbc,
+    type: 2}
+  m_PrefabInternal: {fileID: 181454208}
+  m_GameObject: {fileID: 1877809535}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1921474730
 GameObject:
   m_ObjectHideFlags: 0
@@ -2284,6 +2359,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1946607408}
   - 65: {fileID: 1946607410}
+  - 65: {fileID: 1946607412}
   - 114: {fileID: 1946607409}
   m_Layer: 8
   m_Name: BlueDoor
@@ -2329,6 +2405,19 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &1946607412
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 6dfa6cfd3ea65a047a2a16e0c2b6e224,
+    type: 2}
+  m_PrefabInternal: {fileID: 338535355}
+  m_GameObject: {fileID: 1946607407}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1982271364
 GameObject:
@@ -2466,6 +2555,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1986806119}
   - 65: {fileID: 1986806118}
+  - 65: {fileID: 1986806120}
   - 114: {fileID: 1986806117}
   m_Layer: 8
   m_Name: RedDoor
@@ -2512,6 +2602,19 @@ Transform:
   m_Children:
   - {fileID: 2050622059}
   m_Father: {fileID: 1865551365}
+--- !u!65 &1986806120
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2a57d0b13896b884aa2c2cf4f7e87fbc,
+    type: 2}
+  m_PrefabInternal: {fileID: 224409428}
+  m_GameObject: {fileID: 1986806116}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1987824008
 GameObject:
   m_ObjectHideFlags: 0
@@ -2712,6 +2815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae818e0b907a0014bb339e4fb4c35932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  color: 1
 --- !u!1 &2050622058
 GameObject:
   m_ObjectHideFlags: 0

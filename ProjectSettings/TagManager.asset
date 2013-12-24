@@ -7,6 +7,9 @@ TagManager:
   - RedKey
   - BlueKey
   - YellowKey
+  - BlueDoor
+  - RedDoor
+  - YellowDoor
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
