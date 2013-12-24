@@ -17,32 +17,31 @@ function OnCollisionEnter(collision : Collision) {
         lastCollider = other;
         Debug.Log("Collided " + collisions + " times");
     }
-        
-} 
+
+}
 
 function GetDamage() {
     return Mathf.Pow(power, (collisions + 1));
  }
- 
+
  function GetDamageRadius() {
     return power * collisions;
  }
- 
+
  function Explode() {
     var damageRadius: int = GetDamageRadius();
     Debug.Log("Damage radius is " + damageRadius);
-    
+
     var colliders : Collider[] = Physics.OverlapSphere(transform.position, damageRadius);
-     
+
      var damage: int = GetDamage();
      for(var hit in colliders) {
         if(hit.gameObject.tag == "Player") {
             //hit.rigidbody.AddExplosionForce(power, transform.position, damageRadius, 3.0);
             hit.gameObject.GetComponent("Health").ResolveDamage(damage);
-            
+
         }
      }
      Destroy(gameObject);
 
  }
- 
