@@ -59,6 +59,8 @@
      <None Include="Assets\Standard Assets\Gem Shader\diamond shader.shader" />
  <Reference Include="Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
+     <Compile Include="Assets\Game\Scripts\Character\Health.js" />
+     <Compile Include="Assets\Game\Scripts\Weapons\BouncyGranade.js" />
  </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -57,6 +57,8 @@
      <Compile Include="Assets\Game\Scripts\Weapons\WeaponSpawnPoint.js" />
      <None Include="Assets\Standard Assets\Gem Shader\diamond shader transparent.shader" />
      <None Include="Assets\Standard Assets\Gem Shader\diamond shader.shader" />
+     <Compile Include="Assets\Game\Scripts\Character\Health.js" />
+     <Compile Include="Assets\Game\Scripts\Weapons\BouncyGranade.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
