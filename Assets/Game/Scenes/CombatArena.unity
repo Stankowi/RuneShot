@@ -1080,6 +1080,10 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: .705033302
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
+      propertyPath: m_TagString
+      value: SpawnPoint
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
   m_RootGameObject: {fileID: 1539282480}
@@ -1693,6 +1697,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 249923770}
   - 65: {fileID: 249923769}
+  - 65: {fileID: 249923771}
   - 114: {fileID: 249923768}
   m_Layer: 8
   m_Name: YellowDoor
@@ -1739,6 +1744,19 @@ Transform:
   m_Children:
   - {fileID: 1025085172}
   m_Father: {fileID: 200266222}
+--- !u!65 &249923771
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2c3d6fe0b738cc948a7fe0509e98c3a9,
+    type: 2}
+  m_PrefabInternal: {fileID: 589342033}
+  m_GameObject: {fileID: 249923767}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &263357374
 GameObject:
   m_ObjectHideFlags: 0
@@ -3015,6 +3033,10 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: .705033302
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
+      propertyPath: m_TagString
+      value: SpawnPoint
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
   m_RootGameObject: {fileID: 698019998}
@@ -3352,6 +3374,10 @@ Prefab:
     - target: {fileID: 400002, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
       propertyPath: m_LocalRotation.w
       value: .705033302
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
+      propertyPath: m_TagString
+      value: SpawnPoint
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
@@ -4404,7 +4430,7 @@ GameObject:
   - 114: {fileID: 514024511}
   m_Layer: 0
   m_Name: CharacterSpawnPoint
-  m_TagString: Untagged
+  m_TagString: SpawnPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5645,6 +5671,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 648630835}
   - 65: {fileID: 648630834}
+  - 65: {fileID: 648630836}
   - 114: {fileID: 648630833}
   m_Layer: 8
   m_Name: RedDoor
@@ -5691,6 +5718,19 @@ Transform:
   m_Children:
   - {fileID: 1599651732}
   m_Father: {fileID: 1865551365}
+--- !u!65 &648630836
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2a57d0b13896b884aa2c2cf4f7e87fbc,
+    type: 2}
+  m_PrefabInternal: {fileID: 553803439}
+  m_GameObject: {fileID: 648630832}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &651494498
 GameObject:
   m_ObjectHideFlags: 0
@@ -5909,7 +5949,7 @@ GameObject:
   - 114: {fileID: 698020000}
   m_Layer: 0
   m_Name: CharacterSpawnPoint
-  m_TagString: Untagged
+  m_TagString: SpawnPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6061,6 +6101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae818e0b907a0014bb339e4fb4c35932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  color: 2
 --- !u!1 &702336278
 GameObject:
   m_ObjectHideFlags: 0
@@ -6767,6 +6808,10 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
+      propertyPath: m_TagString
+      value: SpawnPoint
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
   m_RootGameObject: {fileID: 1469121117}
@@ -7317,6 +7362,10 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
+      propertyPath: m_TagString
+      value: SpawnPoint
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
   m_RootGameObject: {fileID: 1716566242}
@@ -7527,6 +7576,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 904921782}
   - 65: {fileID: 904921784}
+  - 65: {fileID: 904921785}
   - 114: {fileID: 904921783}
   m_Layer: 8
   m_Name: BlueDoor
@@ -7572,6 +7622,19 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &904921785
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 6dfa6cfd3ea65a047a2a16e0c2b6e224,
+    type: 2}
+  m_PrefabInternal: {fileID: 1337652019}
+  m_GameObject: {fileID: 904921781}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &907424812
 Prefab:
@@ -7693,6 +7756,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 929648529}
   - 65: {fileID: 929648528}
+  - 65: {fileID: 929648530}
   - 114: {fileID: 929648527}
   m_Layer: 8
   m_Name: YellowDoor
@@ -7739,6 +7803,19 @@ Transform:
   m_Children:
   - {fileID: 1992971338}
   m_Father: {fileID: 200266222}
+--- !u!65 &929648530
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2c3d6fe0b738cc948a7fe0509e98c3a9,
+    type: 2}
+  m_PrefabInternal: {fileID: 1142267495}
+  m_GameObject: {fileID: 929648526}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &944211836
 GameObject:
   m_ObjectHideFlags: 0
@@ -8206,6 +8283,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 966002006}
   - 65: {fileID: 966002005}
+  - 65: {fileID: 966002007}
   - 114: {fileID: 966002004}
   m_Layer: 8
   m_Name: RedDoor
@@ -8252,6 +8330,19 @@ Transform:
   m_Children:
   - {fileID: 1992959081}
   m_Father: {fileID: 1865551365}
+--- !u!65 &966002007
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2a57d0b13896b884aa2c2cf4f7e87fbc,
+    type: 2}
+  m_PrefabInternal: {fileID: 1280343281}
+  m_GameObject: {fileID: 966002003}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &966444691
 GameObject:
   m_ObjectHideFlags: 0
@@ -9086,6 +9177,10 @@ Prefab:
     - target: {fileID: 400002, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
       propertyPath: m_LocalRotation.w
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
+      propertyPath: m_TagString
+      value: SpawnPoint
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7f29ef35ae29f6c45bfdb8fe14609c8a, type: 2}
@@ -11040,7 +11135,7 @@ GameObject:
   - 114: {fileID: 1469121119}
   m_Layer: 0
   m_Name: CharacterSpawnPoint
-  m_TagString: Untagged
+  m_TagString: SpawnPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11489,7 +11584,7 @@ GameObject:
   - 114: {fileID: 1539282482}
   m_Layer: 0
   m_Name: CharacterSpawnPoint
-  m_TagString: Untagged
+  m_TagString: SpawnPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12754,7 +12849,7 @@ GameObject:
   - 114: {fileID: 1716566244}
   m_Layer: 0
   m_Name: CharacterSpawnPoint
-  m_TagString: Untagged
+  m_TagString: SpawnPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13031,7 +13126,7 @@ GameObject:
   - 114: {fileID: 1757130644}
   m_Layer: 0
   m_Name: CharacterSpawnPoint
-  m_TagString: Untagged
+  m_TagString: SpawnPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13131,6 +13226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae818e0b907a0014bb339e4fb4c35932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  color: 0
 --- !u!65 &1763142225
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13745,6 +13841,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1877809538}
   - 65: {fileID: 1877809537}
+  - 65: {fileID: 1877809539}
   - 114: {fileID: 1877809536}
   m_Layer: 8
   m_Name: RedDoor
@@ -13791,6 +13888,19 @@ Transform:
   m_Children:
   - {fileID: 2073957000}
   m_Father: {fileID: 1865551365}
+--- !u!65 &1877809539
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2a57d0b13896b884aa2c2cf4f7e87fbc,
+    type: 2}
+  m_PrefabInternal: {fileID: 181454208}
+  m_GameObject: {fileID: 1877809535}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1878316123
 Prefab:
   m_ObjectHideFlags: 0
@@ -14093,6 +14203,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1946607408}
   - 65: {fileID: 1946607410}
+  - 65: {fileID: 1946607411}
   - 114: {fileID: 1946607409}
   m_Layer: 8
   m_Name: BlueDoor
@@ -14138,6 +14249,19 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &1946607411
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 6dfa6cfd3ea65a047a2a16e0c2b6e224,
+    type: 2}
+  m_PrefabInternal: {fileID: 338535355}
+  m_GameObject: {fileID: 1946607407}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1979583822
 GameObject:
@@ -14344,6 +14468,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1986806119}
   - 65: {fileID: 1986806118}
+  - 65: {fileID: 1986806120}
   - 114: {fileID: 1986806117}
   m_Layer: 8
   m_Name: RedDoor
@@ -14390,6 +14515,19 @@ Transform:
   m_Children:
   - {fileID: 2050622059}
   m_Father: {fileID: 1865551365}
+--- !u!65 &1986806120
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 6500002, guid: 2a57d0b13896b884aa2c2cf4f7e87fbc,
+    type: 2}
+  m_PrefabInternal: {fileID: 224409428}
+  m_GameObject: {fileID: 1986806116}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1987824008
 GameObject:
   m_ObjectHideFlags: 0
@@ -14786,6 +14924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae818e0b907a0014bb339e4fb4c35932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  color: 1
 --- !u!1 &2024287447
 GameObject:
   m_ObjectHideFlags: 0
