@@ -91,7 +91,11 @@ function OnGUI() {
                 if( GUI.Button(Rect(10, y, 300, 30), hostData[i].gameName) ) {
                     isInitialized = true;                    
                     isSinglePlayer = false;
-                    connectToServer( hostData[i].ip.Join("."), hostData[i].port );
+                    var tmpIp : String = hostData[i].ip[0];
+                    for(var j : int = 1; j < hostData[i].ip.Length; j++) {
+                        tmpIp = "." + hostData[i].ip[j];
+                    }
+                    connectToServer( tmpIp, hostData[i].port );
                 }
             }
         }
