@@ -1,7 +1,4 @@
-﻿var healthColor: Color;
-
-private var barDisplay : float = 0;
-
+﻿
 private var emptyStyle: GUIStyle;
 private var healthStyle: GUIStyle;
 
