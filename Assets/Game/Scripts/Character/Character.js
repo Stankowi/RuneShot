@@ -18,7 +18,6 @@ function IsServer(): boolean {
 
 @RPC
 function reattachModel( modelID: NetworkViewID ) {
-    Debug.Log("Reattach: " + modelID + " - " + NetworkView.Find(modelID) );
 
     var model = NetworkView.Find(modelID);
     

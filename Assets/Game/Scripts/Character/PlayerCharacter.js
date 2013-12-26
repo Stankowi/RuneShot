@@ -8,7 +8,8 @@ private var bouncyGranade: GameObject;
 
 function Start() {
     networkManager = GameObject.FindObjectOfType(NetworkManager);
-    bouncyGranade = Resources.Load("Guns/BouncyGranade", GameObject);}
+    bouncyGranade = Resources.Load("Guns/BouncyGranade", GameObject);
+}
 
 function Awake () {
     keyInventory = GetComponent(KeyInventory);
@@ -33,7 +34,6 @@ function Update () {
         EndPowerCalc();
     }
 }
-
 
 function IsMyPlayerCharacter(): boolean {
 

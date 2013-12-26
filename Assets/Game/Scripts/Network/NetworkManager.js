@@ -212,8 +212,14 @@ function startSinglePlayer() {
 // Utility functions
 //
 
-function getSpawnPoint(): CharacterSpawnPoint {
+private function getSpawnPoint(): CharacterSpawnPoint {
 
     return playerSpawnPoints[ Random.Range(0, playerSpawnPoints.length) ];
 }
+
+function IsMyPlayerCharacter(player: PlayerCharacter): boolean {
+
+    return player != null && (IsSinglePlayer() || player.networkView.isMine);
+}
+
 
