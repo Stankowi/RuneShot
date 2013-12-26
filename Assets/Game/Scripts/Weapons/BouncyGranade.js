@@ -1,6 +1,7 @@
 private var power: int = 2;
 private var collisions: int = 0;
 private var lastCollider: GameObject = null;
+private var launchingPlayer: GameObject = null;
 
 function Update() {
     if ((gameObject.rigidbody.IsSleeping) && (rigidbody.velocity.magnitude == 0)) {
@@ -10,13 +11,21 @@ function Update() {
 
 function OnCollisionEnter(collision : Collision) {
     var other: GameObject = collision.gameObject;
-    if (other.tag == "Player") {
+    Debug.Log("Collisions " + (other.GetInstanceID() == this.launchingPlayer.GetInstanceID()));
+    if (other.tag == "Player" &&
+        (collisions > 0 ||
+         (collisions <= 0 && ! IsLauncher(other)))) {
+        Debug.Log("Collided xxx");
         Explode();
     } else if (other != lastCollider) {
         collisions += 1;
         lastCollider = other;
         Debug.Log("Collided " + collisions + " times");
     }
+}
+
+function IsLauncher(obj: GameObject) {
+    return obj.GetInstanceID() == this.launchingPlayer.GetInstanceID();
 }
 
 function GetDamage() {
@@ -45,7 +54,7 @@ function GetDamage() {
 
  }
 
-function Trigger(facing: Vector3, force: int) {
-    Debug.Log("In trigger");
+function Trigger(launchingPlayer: GameObject, facing: Vector3, force: int) {
+    this.launchingPlayer = launchingPlayer;
     rigidbody.AddRelativeForce(facing * force, ForceMode.Force);
 }

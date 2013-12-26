@@ -86,7 +86,7 @@ function TriggerProjectileWeapon(weaponDesc: WeaponDesc, facing: Vector3, force:
 function TriggerNonProjectileWeapon(weaponDesc: WeaponDesc, facing: Vector3, force: int) {
     var weaponPos = transform.TransformPoint(0, 1, 1);
     var weapon = Instantiate(weaponDesc.obj, weaponPos, Quaternion.identity);
-    weaponDesc.Component(weapon).Trigger(facing, force);
+    weaponDesc.Component(weapon).Trigger(gameObject, facing, force);
 }
 
 function Power(start : int, end : int): int {
