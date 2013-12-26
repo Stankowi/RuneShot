@@ -17,7 +17,6 @@ function OnCollisionEnter(collision : Collision) {
         lastCollider = other;
         Debug.Log("Collided " + collisions + " times");
     }
-
 }
 
 function GetDamage() {
@@ -45,3 +44,8 @@ function GetDamage() {
      Destroy(gameObject);
 
  }
+
+function Trigger(facing: Vector3, force: int) {
+    Debug.Log("In trigger");
+    rigidbody.AddRelativeForce(facing * force, ForceMode.Force);
+}

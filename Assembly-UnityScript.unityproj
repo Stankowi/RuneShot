@@ -53,6 +53,7 @@
      <Compile Include="Assets\Game\Scripts\Character\NonPlayerCharacter.js" />
      <Compile Include="Assets\Game\Scripts\Character\NonPlayerController.js" />
      <Compile Include="Assets\Game\Scripts\Character\PlayerCharacter.js" />
+     <Compile Include="Assets\Game\Scripts\Character\Weapons.js" />
      <Compile Include="Assets\Game\Scripts\Doors\Door.js" />
      <Compile Include="Assets\Game\Scripts\Doors\DoorColor.js" />
      <Compile Include="Assets\Game\Scripts\Doors\KeyInventory.js" />
