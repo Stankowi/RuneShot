@@ -1,24 +1,28 @@
-private var power: int = 2;
+private static var ttl: int = 5;
+
 private var collisions: int = 0;
-private var lastCollider: GameObject = null;
 private var launchingPlayer: GameObject = null;
+private var explodeAt: int = 0;
+
+function Start() {
+    explodeAt = Time.time + ttl;
+}
 
 function Update() {
-    if ((gameObject.rigidbody.IsSleeping) && (rigidbody.velocity.magnitude == 0)) {
+    if (explodeAt < Time.time) {
         Explode();
     }
 }
 
 function OnCollisionEnter(collision: Collision) {
     var other: GameObject = collision.gameObject;
-    if (other.tag == "Player" &&
-        (collisions > 0 ||
-         (collisions <= 0 && ! IsLauncher(other)))) {
-        Explode();
-    } else if (other != lastCollider) {
-        collisions += 1;
-        lastCollider = other;
+    if (other.tag == "Player" && (collisions > 0 ||
+                                  (collisions <= 0 && !IsLauncher(other)))) {
+        var joint = gameObject.AddComponent(FixedJoint);
+        joint.connectedBody = other.rigidBody;
     }
+
+    collisions += 1;
 }
 
 function IsLauncher(obj: GameObject): boolean {
@@ -26,11 +30,11 @@ function IsLauncher(obj: GameObject): boolean {
 }
 
 function GetDamage(): int {
-    return Mathf.Pow(power, (collisions + 1));
- }
+    return Base.health()  * 0.25;
+}
 
  function GetDamageRadius(): int {
-    return power * collisions;
+    return 2;
  }
 
  function Explode() {
@@ -50,10 +54,5 @@ function GetDamage(): int {
 @RPC
 function Trigger(launchingPlayer: GameObject, facing: Vector3, pressDuration: int) {
     this.launchingPlayer = launchingPlayer;
-    rigidbody.AddRelativeForce(facing * Power(pressDuration));
-}
-
-function Power(pressDuration: int): int {
-    var power: int = Mathf.Min(Mathf.Pow(2, pressDuration + 1), 64);
-    return Mathf.Min(power * 250, 5000);
+    rigidbody.AddRelativeForce(facing * 1000);
 }
