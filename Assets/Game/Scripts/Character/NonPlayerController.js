@@ -1,12 +1,43 @@
+enum AttackState {
+    AttackWaiting,
+    AttackCharging
+};
+
 private var motor : CharacterMotor;
+private var attackTimer : float;
+private var chargeTimer : float;
+private var attackState : AttackState = AttackState.AttackWaiting;
 
 // Use this for initialization
 function Awake () {
 	motor = GetComponent(CharacterMotor);
+    attackTimer = Random.Range(2.0f, 4.0f);
 }
 
 // Update is called once per frame
 function Update () {
+    var wpns = GetComponent(Weapons);
+    if (wpns != null) {
+        switch (attackState) {
+            case AttackState.AttackCharging: 
+                chargeTimer -= Time.deltaTime;
+                if (chargeTimer <= 0.0f) {
+                    wpns.EndPowerCalc();
+                    attackState = AttackState.AttackWaiting;
+                    attackTimer = Random.Range(2.0f, 4.0f);
+                }
+                break;
+            
+            case AttackState.AttackWaiting:
+                attackTimer -= Time.deltaTime;
+                if (attackTimer <= 0.0f) {
+                    wpns.StartPowerCalc();
+                    attackState = AttackState.AttackCharging;
+                    chargeTimer = Random.Range(2.0f, 4.0f);
+                }
+            
+        }
+    }    
     /*
 
 	// Get the input vector from keyboard or analog stick

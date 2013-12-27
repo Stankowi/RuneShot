@@ -34,13 +34,6 @@ function Start() {
 }
 
 function Update () {
-    if (Input.GetKeyDown(KeyCode.B)) {
-        StartPowerCalc();
-    }
-
-    if (Input.GetKeyUp(KeyCode.B)) {
-        EndPowerCalc();
-    }
 }
 
 function StartPowerCalc() {
