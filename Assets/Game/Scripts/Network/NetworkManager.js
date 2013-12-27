@@ -11,7 +11,8 @@ private var playerSpawnPoints: CharacterSpawnPoint[];
 private var playerName: String;
 private var hostname: String = "localhost";
 private var hostport: String = "25000";
-
+private var isServerInitialized: boolean;
+//private var enemyList: 
 //
 // public helper functions
 //
@@ -41,6 +42,14 @@ function Update () {
 
     // check to see if we're waiting for the servers list
     updateCheckRefreshing();
+    if (isServerInitialized) {
+        updateGameLoop();
+    }
+}
+
+function updateGameLoop()
+{
+    
 }
 
 function OnGUI() {
@@ -160,7 +169,7 @@ function OnPlayerDisconnected( player: NetworkPlayer ) {
 
 // This is the location where game systems should add area initializtion hooks
 function InitializeServerSystems() {
-
+    isServerInitialized = true;
 }
        
 //
@@ -210,6 +219,7 @@ function OnFailedToConnect( error: NetworkConnectionError ) {
 function startSinglePlayer() {
     
     getSpawnPoint().spawnCharacter(false);
+    isServerInitialized = true;
 }
 
 //
