@@ -2,6 +2,9 @@
 private var modelPrefab: GameObject;
 private var cameraPrefab: GameObject;
 
+// Spawn the camera in the head of the character
+private var cameraOffset = Vector3(0,1.5,0);
+
 function Start () {
     
     playerPrefab = Resources.Load("Characters/PlayerCharacter", GameObject);
@@ -28,6 +31,8 @@ function spawnCharacter(networked: boolean) {
 
     model.transform.parent = chr.transform;
     
-    var camera = GameObject.Instantiate(cameraPrefab, transform.position + Vector3(0, 0.907084, 0), transform.rotation);
+    var camera = GameObject.Instantiate(cameraPrefab, transform.position, transform.rotation);
     camera.transform.parent = chr.transform;
+    // Position the camera relative to the character, at an offset high enough up to be in the head.
+    camera.transform.localPosition = cameraOffset;
 }
