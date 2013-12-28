@@ -2,7 +2,7 @@ private var powerCalcStart: int = 0;
 private var bouncyGranade: GameObject = null;
 private var currentWeapon: WeaponDesc = null;
 private var weaponList: Hashtable = new Hashtable();
-private var serverCache: Hashtable = new Hashtable();
+private static var serverCache: Hashtable = new Hashtable();
 
 enum WeaponType {
     WeaponProducesProjectile,
@@ -38,7 +38,7 @@ function Update () {
 
 function StartPowerCalc() {
     if (CallRemote()) {
-        networkView.RPC("StartPowerCalc",
+        networkView.RPC("StartPowerCalcRemote",
                         RPCMode.Server,
                         Network.player);
     } else {
@@ -47,15 +47,15 @@ function StartPowerCalc() {
 }
 
 @RPC
-function StartPowerCalc(networkPlayer: NetworkPlayer) {
-    serverCache[NetworkPlayer] = Time.time;
+function StartPowerCalcRemote(networkPlayer: NetworkPlayer) {
+    serverCache[networkPlayer] = Time.time;
 }
 
 function EndPowerCalc() {
     var facing: Vector3 = FacingVector();
 
     if (CallRemote()) {
-        networkView.RPC("EndPowerCalc",
+        networkView.RPC("EndPowerCalcRemote",
                         RPCMode.Server,
                         Network.player,
                         transform.position,
@@ -74,14 +74,13 @@ function EndPowerCalc() {
 }
 
 @RPC
-function EndPowerCalc(networkPlayer: NetworkPlayer, position: Vector3, facing: Vector3) {
-    var powerCalcStart: int = serverCache[networkPlayer];
-    if (! powerCalcStart) {
+function EndPowerCalcRemote(networkPlayer: NetworkPlayer, position: Vector3, facing: Vector3) {
+    if (! serverCache.Contains(networkPlayer)) {
         return null;
     }
 
     var end = Time.time;
-    Trigger(position, facing, end - powerCalcStart);
+    Trigger(position, facing, end - serverCache[networkPlayer]);
     serverCache[networkPlayer] = 0;
     return null;
 }
@@ -110,7 +109,13 @@ function TriggerProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, faci
 
 function TriggerNonProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, facing: Vector3, pressDuration: int) {
     var weaponPos = position + Vector3(0,1,0);
-    var weapon = Instantiate(weaponDesc.obj, weaponPos, Quaternion.identity);
+
+    if (CallRemote()) {
+        weapon = Network.Instantiate(weaponDesc.obj, weaponPos, Quaternion.identity, 12);
+    } else {
+        weapon = Instantiate(weaponDesc.obj, weaponPos, Quaternion.identity);
+    }
+
     weaponDesc.Component(weapon).Trigger(gameObject, facing, pressDuration);
 }
 

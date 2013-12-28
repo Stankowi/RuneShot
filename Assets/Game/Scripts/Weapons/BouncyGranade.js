@@ -51,7 +51,6 @@ function GetDamage(): int {
      Destroy(gameObject);
  }
 
-@RPC
 function Trigger(launchingPlayer: GameObject, facing: Vector3, pressDuration: int) {
     this.launchingPlayer = launchingPlayer;
     rigidbody.AddRelativeForce(facing * 1000);
