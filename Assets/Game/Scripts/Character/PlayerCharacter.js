@@ -14,7 +14,7 @@ function Awake () {
 // Update is called once per frame
 function Update () {
     if( !IsMyPlayerCharacter() ) {
-        Debug.Log("Disabling FPSC: " + networkView.viewID);
+        //Debug.Log("Disabling FPSC: " + networkView.viewID);
         controller.enabled = false;
         return;
     }
