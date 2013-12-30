@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Common\Base.js" />
+     <Compile Include="Assets\Common\Network\NetworkUtil.js" />
      <Compile Include="Assets\Common\Physics\Vector3Util.js" />
      <Compile Include="Assets\Game\Scripts\Character\Character.js" />
      <Compile Include="Assets\Game\Scripts\Character\CharacterAnimator.js" />
@@ -63,6 +64,7 @@
      <Compile Include="Assets\Game\Scripts\Doors\KeySpawnPoint.js" />
      <Compile Include="Assets\Game\Scripts\MainGUI.js" />
      <Compile Include="Assets\Game\Scripts\Network\NetworkManager.js" />
+     <Compile Include="Assets\Game\Scripts\Particles\OneShotParticleEffect.js" />
      <Compile Include="Assets\Game\Scripts\Weapons\BouncyGranade.js" />
      <Compile Include="Assets\Game\Scripts\Weapons\WeaponSpawnPoint.js" />
      <None Include="Assets\Standard Assets\Gem Shader\diamond shader transparent.shader" />
