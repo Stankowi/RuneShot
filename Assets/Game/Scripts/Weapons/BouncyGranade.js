@@ -3,6 +3,9 @@ private static var ttl: int = 5;
 private var collisions: int = 0;
 private var launchingPlayer: GameObject = null;
 private var explodeAt: int = 0;
+private var triggered = false;
+
+private var explosionEffect: String = "Particles/Explosion"; 
 
 function Start() {
     explodeAt = Time.time + ttl;
@@ -15,11 +18,25 @@ function Update() {
 }
 
 function OnCollisionEnter(collision: Collision) {
+    if(!triggered) {
+        return;
+    }
     var other: GameObject = collision.gameObject;
     if (other.tag == "Player" && (collisions > 0 ||
                                   (collisions <= 0 && !IsLauncher(other)))) {
-        var joint = gameObject.AddComponent(FixedJoint);
-        joint.connectedBody = other.rigidBody;
+        transform.parent = other.transform;
+        collider.enabled = false;
+        GameObject.Destroy(rigidbody);
+    }
+    else {
+        // Grenades should collide with the player that spawned them.
+        // However, when spawning the grenade, it should not collide with the player.
+        // After the first collision with the world, the grenade needs to stop ignoring
+        // the player that spawned it, so it can collide with that player again.
+        // There is no "renableCollision" for two colliders, so the only way to
+        // allow the grenade to collide with its owner again is to re-insert it into the simulation.
+        collider.enabled = false;
+        collider.enabled = true;
     }
 
     collisions += 1;
@@ -48,10 +65,17 @@ function GetDamage(): int {
             hit.gameObject.GetComponent("Health").ResolveDamage(damage);
         }
      }
+     
+     NetworkUtil.Instantiate(Resources.Load(explosionEffect),transform.position,Quaternion.identity,NetworkGroup.Explosion);
      Destroy(gameObject);
  }
 
 function Trigger(launchingPlayer: GameObject, facing: Vector3, pressDuration: int) {
+    triggered = true;
     this.launchingPlayer = launchingPlayer;
-    rigidbody.AddRelativeForce(facing * 1000);
+    gameObject.transform.forward = facing;
+    // The grenade should not collide with the player that spawns it until it is safely outside that player.
+    // The easiest way to accomplish this is to tell Physics to ignore collision between the player and the grenade.
+    Physics.IgnoreCollision(launchingPlayer.collider,gameObject.collider);
+    rigidbody.AddRelativeForce(Vector3(0,0,1000));
 }
