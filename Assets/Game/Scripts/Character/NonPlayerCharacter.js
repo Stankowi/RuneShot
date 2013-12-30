@@ -13,17 +13,7 @@ function Awake () {
 
 // Update is called once per frame
 function Update () {
-
-    /*
-    if (Input.GetKeyDown(KeyCode.B)) {
-        StartPowerCalc();
-    }
-
-    if (Input.GetKeyUp(KeyCode.B)) {
-        EndPowerCalc();
-    }
-    */
-    
+   
 }
 
 function OnControllerColliderHit (hit : ControllerColliderHit) {
