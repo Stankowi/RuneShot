@@ -125,11 +125,12 @@ public class NetworkRigidbody : MonoBehaviour
 			if (extrapolationLength < m_ExtrapolationLimit) {
 				float axisLength = extrapolationLength * latest.angularVelocity.magnitude * Mathf.Rad2Deg;
 				Quaternion angularRotation = Quaternion.AngleAxis (axisLength, latest.angularVelocity);
-				
-				rigidbody.position = latest.pos + latest.velocity * extrapolationLength;
-				rigidbody.rotation = angularRotation * latest.rot;
-				rigidbody.velocity = latest.velocity;
-				rigidbody.angularVelocity = latest.angularVelocity;
+				if(gameObject.GetComponent<Rigidbody>()) {
+    				rigidbody.position = latest.pos + latest.velocity * extrapolationLength;
+    				rigidbody.rotation = angularRotation * latest.rot;
+    				rigidbody.velocity = latest.velocity;
+    				rigidbody.angularVelocity = latest.angularVelocity;
+                }
 			}
 		}
 	}
