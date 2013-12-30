@@ -1,7 +1,4 @@
-
-
-private static var defaultHealth: int = 100;
-private var health: int = defaultHealth;;
+private var health: int = Base.health();
 private var networkManager: NetworkManager;
 private var character: Character;
 private var player: PlayerCharacter;
@@ -14,7 +11,7 @@ function Awake() {
     networkManager = GameObject.FindObjectOfType(NetworkManager);
     mainGUI = GameObject.FindObjectOfType(MainGUI);
 
-    // if this is the controlling Client's Health component, notify the main UI element    
+    // if this is the controlling Client's Health component, notify the main UI element
     if( networkManager != null && networkManager.IsMyPlayerCharacter(player) ) {
         if( mainGUI != null ) {
            mainGUI.SetPlayerHealth( this );
@@ -42,15 +39,13 @@ function Die() {
 }
 
 function ResetHealth() {
-    health = defaultHealth;
+    health = Base.health();
 }
 
 function GetHealth(): int {
-
     return health;
 }
 
 function GetMaxHealth(): int {
-
-    return defaultHealth;
+    return Base.health();
 }

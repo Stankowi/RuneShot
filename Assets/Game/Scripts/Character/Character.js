@@ -16,11 +16,15 @@ function IsServer(): boolean {
     return networkManager == null || networkManager.IsSinglePlayer() || Network.isServer;
 }
 
+function CallRemote(): boolean {
+
+    return networkManager == null || !networkManager.IsSinglePlayer() || Network.isClient;
+}
+
 @RPC
 function reattachModel( modelID: NetworkViewID ) {
 
     var model = NetworkView.Find(modelID);
-    
+
     model.transform.parent = transform;
 }
-
