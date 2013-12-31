@@ -32,7 +32,7 @@ function Update () {
 	motor.inputMoveDirection = transform.rotation * directionVector;
 	motor.inputJump = Input.GetButton("Jump");
     
-    var wpns = this.gameObject.GetComponent(Weapons);
+    var wpns = ComponentUtil.GetComponentInHierarchy(gameObject,Weapons);
     if (wpns != null) {
         if (Input.GetKeyDown(KeyCode.B)) {
             wpns.StartPowerCalc();

@@ -7,18 +7,8 @@ function Start() {
 }
 
 function Awake () {
-    keyInventory = GetComponent(KeyInventory);
-    controller = GetComponent(FPSInputController);
-}
-
-// Update is called once per frame
-function Update () {
-    if( !IsMyPlayerCharacter() ) {
-        //Debug.Log("Disabling FPSC: " + networkView.viewID);
-        controller.enabled = false;
-        return;
-    }
-
+    keyInventory = ComponentUtil.GetComponentInHierarchy(gameObject,KeyInventory);
+    controller = ComponentUtil.GetComponentInHierarchy(gameObject,FPSInputController);
 }
 
 function IsMyPlayerCharacter(): boolean {

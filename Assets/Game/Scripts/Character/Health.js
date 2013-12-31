@@ -6,8 +6,9 @@ private var mainGUI: MainGUI;
 
 
 function Awake() {
-    character = GetComponent(Character);
-    player = GetComponent(PlayerCharacter);
+    character = ComponentUtil.GetComponentInHierarchy(gameObject,Character);
+    player = ComponentUtil.GetComponentInHierarchy(gameObject,PlayerCharacter);
+
     networkManager = GameObject.FindObjectOfType(NetworkManager);
     mainGUI = GameObject.FindObjectOfType(MainGUI);
 
@@ -35,7 +36,7 @@ function Die() {
     var spawnPoint: GameObject = spawnPoints[pointIndex];
 
     ResetHealth();
-    gameObject.transform.position = spawnPoint.transform.position;
+    gameObject.transform.root.position = spawnPoint.transform.position;
 }
 
 function ResetHealth() {

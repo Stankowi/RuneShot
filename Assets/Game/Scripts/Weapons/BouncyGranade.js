@@ -62,7 +62,7 @@ function GetDamage(): int {
      var damage: int = GetDamage();
      for(var hit in colliders) {
         if(hit.gameObject.tag == "Player") {
-            hit.gameObject.GetComponent("Health").ResolveDamage(damage);
+            ComponentUtil.GetComponentInHierarchy(hit.gameObject,"Health").ResolveDamage(damage);
         }
      }
      

@@ -155,8 +155,29 @@ function OnServerInitialized() {
 }
 
 function OnPlayerConnected( player: NetworkPlayer ) {
-
     Debug.Log("Player connected from " + player.ipAddress + ":" + player.port);
+    SpawnServerCharacter(player);
+}
+
+function SpawnServerCharacter(player: NetworkPlayer) {
+
+    var chrServer: GameObject = GameObject.Instantiate(Resources.Load("Characters/CharacterServer",GameObject),
+                                                Vector3.zero,
+                                                Quaternion.identity);
+    
+    var chrNetwork: GameObject = NetworkUtil.Instantiate(Resources.Load("Characters/CharacterNetwork",GameObject),
+                                                Vector3.zero,
+                                                Quaternion.identity,
+                                                NetworkGroup.CharacterNetwork);
+    chrNetwork.transform.parent = chrServer.transform;
+    
+    if(Network.connections.Length > 0) {
+        chrNetwork.networkView.RPC("SetPlayerData", RPCMode.AllBuffered, player);
+    }
+    else {    
+        var cn: CharacterNetwork = chrNetwork.GetComponent(CharacterNetwork) as CharacterNetwork;
+        cn.SetPlayerData(player);
+    }
 
 }
 
@@ -219,6 +240,7 @@ function OnFailedToConnect( error: NetworkConnectionError ) {
 function startSinglePlayer() {
     
     getSpawnPoint().spawnCharacter(false);
+    SpawnServerCharacter(Network.player);
     isServerInitialized = true;
 }
 

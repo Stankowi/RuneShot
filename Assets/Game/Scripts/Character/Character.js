@@ -23,8 +23,7 @@ function CallRemote(): boolean {
 
 @RPC
 function reattachModel( modelID: NetworkViewID ) {
-
     var model = NetworkView.Find(modelID);
-
-    model.transform.parent = transform;
+    transform.parent = model.transform;
 }
+

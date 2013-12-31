@@ -21,7 +21,7 @@ class WeaponDesc {
     }
 
     function Component(target: GameObject) {
-        return target.GetComponent(this.name);
+        return ComponentUtil.GetComponentInHierarchy(target,this.name);
     }
 }
 
@@ -116,7 +116,7 @@ function TriggerNonProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, f
         weapon = Instantiate(weaponDesc.obj, weaponPos, Quaternion.identity);
     }
 
-    weaponDesc.Component(weapon).Trigger(gameObject, facing, pressDuration);
+    weaponDesc.Component(weapon).Trigger(gameObject.transform.root.gameObject, facing, pressDuration);
 }
 
 function FacingVector() {
@@ -124,5 +124,5 @@ function FacingVector() {
 }
 
 function CallRemote(): boolean {
-    return gameObject.GetComponent("Character").CallRemote();
+    return ComponentUtil.GetComponentInHierarchy(gameObject,"Character").CallRemote();
 }

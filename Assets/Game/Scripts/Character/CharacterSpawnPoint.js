@@ -1,38 +1,46 @@
-﻿private var playerPrefab: GameObject;
-private var modelPrefab: GameObject;
-private var cameraPrefab: GameObject;
+﻿private var cameraPrefab: GameObject;
+private var controllerPrefab: GameObject;
+private var graphicsPrefab: GameObject;
+private var legacyPrefab: GameObject;
 
 // Spawn the camera in the head of the character
 private var cameraOffset = Vector3(0,1.5,0);
 
 function Start () {
     
-    playerPrefab = Resources.Load("Characters/PlayerCharacter", GameObject);
-    modelPrefab = Resources.Load("Characters/CharacterGraphics", GameObject);
-    cameraPrefab = Resources.Load("Characters/PlayerCamera", GameObject);
+    cameraPrefab = Resources.Load("Characters/PlayerCamera", GameObject);    
+    controllerPrefab = Resources.Load("Characters/CharacterController", GameObject);
+    graphicsPrefab = Resources.Load("Characters/CharacterGraphics", GameObject);
+    legacyPrefab = Resources.Load("Characters/CharacterLegacy", GameObject);
 }
 
 function spawnCharacter(networked: boolean) {
-
-    var chr: GameObject;
-    var model: GameObject;
-
-    if( networked ) {
-        chr = Network.Instantiate(playerPrefab, transform.position, transform.rotation, 1);
-        
-        model = Network.Instantiate(modelPrefab, transform.position, transform.rotation, 1);
-        
-        chr.networkView.RPC("reattachModel", RPCMode.AllBuffered, model.networkView.viewID);
-    }
-    else {
-        chr = GameObject.Instantiate(playerPrefab, transform.position, transform.rotation);
-        model = GameObject.Instantiate(modelPrefab, transform.position, transform.rotation);
-    }
-
+    var chr: GameObject = GameObject.Instantiate(controllerPrefab,
+                                                transform.position,
+                                                transform.rotation);
+    
+    var model: GameObject = NetworkUtil.Instantiate(graphicsPrefab,
+                                                transform.position,
+                                                transform.rotation,
+                                                NetworkGroup.CharacterGraphics);
+    
+    var legacy: GameObject = NetworkUtil.Instantiate(legacyPrefab,
+                                                transform.position,
+                                                transform.rotation,
+                                                NetworkGroup.CharacterLegacy);
     model.transform.parent = chr.transform;
+    model.networkView.observed = chr.transform;
+    legacy.transform.parent = chr.transform;
+    legacy.networkView.observed = chr.transform;
     
     var camera = GameObject.Instantiate(cameraPrefab, transform.position, transform.rotation);
     camera.transform.parent = chr.transform;
     // Position the camera relative to the character, at an offset high enough up to be in the head.
     camera.transform.localPosition = cameraOffset;
+    
+    if(Network.connections.Length > 0) {
+        legacy.networkView.RPC("reattachModel", RPCMode.AllBuffered, model.networkView.viewID);
+        model.networkView.RPC("attachCharacterNetwork", RPCMode.AllBuffered,Network.player);
+    }
+    
 }

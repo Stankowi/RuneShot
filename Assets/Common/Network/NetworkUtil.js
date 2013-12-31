@@ -8,4 +8,3 @@ public static function Instantiate(prefab: UnityEngine.Object, position: Vector3
         return GameObject.Instantiate(prefab,position,rotation);
      }
 }
-
