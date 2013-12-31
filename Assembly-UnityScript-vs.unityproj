@@ -47,11 +47,14 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Common\Base.js" />
+     <Compile Include="Assets\Common\Component\ComponentUtil.js" />
      <Compile Include="Assets\Common\Network\NetworkGroup.js" />
      <Compile Include="Assets\Common\Network\NetworkUtil.js" />
      <Compile Include="Assets\Common\Physics\Vector3Util.js" />
      <Compile Include="Assets\Game\Scripts\Character\Character.js" />
      <Compile Include="Assets\Game\Scripts\Character\CharacterAnimator.js" />
+     <Compile Include="Assets\Game\Scripts\Character\CharacterGraphics.js" />
+     <Compile Include="Assets\Game\Scripts\Character\CharacterNetwork.js" />
      <Compile Include="Assets\Game\Scripts\Character\CharacterSpawnPoint.js" />
      <Compile Include="Assets\Game\Scripts\Character\FPSInputController.js" />
      <Compile Include="Assets\Game\Scripts\Character\Health.js" />
