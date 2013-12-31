@@ -9,8 +9,8 @@ function Update () {
 
 function OnTriggerStay  (player : Collider) {
     
-    var playerChar = ComponentUtil.GetComponentInHierarchy(player.gameObject,typeof(PlayerCharacter)) as PlayerCharacter;
-    if ( playerChar && playerChar.keyInventory && playerChar.keyInventory.hasKey(color) ) {
+    var networkChar = ComponentUtil.GetComponentInHierarchy(player.gameObject,typeof(CharacterNetwork)) as CharacterNetwork;
+    if ( networkChar && networkChar.keyInventory && networkChar.keyInventory.hasKey(color) ) {
         this.collider.enabled = false;
     }
 }

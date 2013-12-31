@@ -1,6 +1,5 @@
 private var networkManager: NetworkManager;
 private var controller : FPSInputController;
-public var keyInventory : KeyInventory;
 
 function Start() {
     networkManager = GameObject.FindObjectOfType(NetworkManager);

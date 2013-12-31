@@ -11,8 +11,14 @@ function Update () {
 
 function OnTriggerEnter (player : Collider) {
     
-    var playerChar = ComponentUtil.GetComponentInHierarchy(player.gameObject,typeof(PlayerCharacter)) as PlayerCharacter;
-    if ( playerChar && playerChar.keyInventory ) {
-        playerChar.keyInventory.addKey( color );
+    var networkChar = ComponentUtil.GetComponentInHierarchy(player.gameObject,typeof(CharacterNetwork)) as CharacterNetwork;
+    var intColor : int = color;
+    if ( networkChar && networkChar.keyInventory ) {
+    
+        if ( networkChar.IsSinglePlayer()) {
+            networkChar.keyInventory.addKey( color );
+        } else {
+            networkChar.networkView.RPC ("AddKeyServer", RPCMode.Server, Network.player, intColor );
+        }
     }
 }

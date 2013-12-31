@@ -15,7 +15,6 @@ GameObject:
   - 148: {fileID: 14800000}
   - 114: {fileID: 11400006}
   - 114: {fileID: 11400008}
-  - 114: {fileID: 11400010}
   - 114: {fileID: 11400012}
   - 114: {fileID: 11400014}
   m_Layer: 11
@@ -142,21 +141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64dc41bc48c3bf240a9170181030240f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyInventory: {fileID: 0}
---- !u!114 &11400010
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 551348c4adae8eb46aacf65b1f6b3d42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  redKeyTex: {fileID: 2800000, guid: 0bca9140e72dfba48b89507a8665d512, type: 3}
-  blueKeyTex: {fileID: 2800000, guid: 5f9121728dfe3a1418bc1f9cf6060df4, type: 3}
-  yellowKeyTex: {fileID: 2800000, guid: ee06c45319a2f2a43b87940d79894b43, type: 3}
 --- !u!114 &11400012
 MonoBehaviour:
   m_ObjectHideFlags: 1
