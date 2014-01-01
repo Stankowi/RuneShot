@@ -20,17 +20,18 @@ function Awake() {
     }
 }
 
-function ResolveDamage(damage: int) {
+function ResolveDamage(damage: int, attacker : GameObject) {
     health -= damage;
     Debug.Log("Health is now " + health);
 
     if (health <= 0) {
         // probably not the right way to handle death, but works for now.
-        Die();
+        Die(damage,attacker);
     }
 }
 
-function Die() {
+function Die(damage: int, attacker : GameObject) {
+    DeadBodyManager.SpawnRagdoll(gameObject.transform.root, damage, attacker);
     var spawnPoints: GameObject[] = GameObject.FindGameObjectsWithTag("SpawnPoint");
     var pointIndex: int = Random.Range(0.0, spawnPoints.length);
     var spawnPoint: GameObject = spawnPoints[pointIndex];

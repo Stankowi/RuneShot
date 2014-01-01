@@ -54,7 +54,9 @@ function GetDamage(): int {
     return 2;
  }
 
- function Explode() {
+ function Explode() { 
+     NetworkUtil.Instantiate(Resources.Load(explosionEffect),transform.position,Quaternion.identity,NetworkGroup.Explosion);
+     
     var damageRadius: int = GetDamageRadius();
 
     var colliders: Collider[] = Physics.OverlapSphere(transform.position, damageRadius);
@@ -62,11 +64,10 @@ function GetDamage(): int {
      var damage: int = GetDamage();
      for(var hit in colliders) {
         if(hit.gameObject.tag == "Player") {
-            ComponentUtil.GetComponentInHierarchy(hit.gameObject,"Health").ResolveDamage(damage);
+            ComponentUtil.GetComponentInHierarchy(hit.gameObject,"Health").ResolveDamage(damage, gameObject);
         }
      }
      
-     NetworkUtil.Instantiate(Resources.Load(explosionEffect),transform.position,Quaternion.identity,NetworkGroup.Explosion);
      Destroy(gameObject);
  }
 

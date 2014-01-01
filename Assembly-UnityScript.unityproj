@@ -51,6 +51,7 @@
      <Compile Include="Assets\Common\Network\NetworkGroup.js" />
      <Compile Include="Assets\Common\Network\NetworkUtil.js" />
      <Compile Include="Assets\Common\Physics\Vector3Util.js" />
+     <Compile Include="Assets\Game\Scripts\Bodies\DeadBodyManager.js" />
      <Compile Include="Assets\Game\Scripts\Character\Character.js" />
      <Compile Include="Assets\Game\Scripts\Character\CharacterAnimator.js" />
      <Compile Include="Assets\Game\Scripts\Character\CharacterGraphics.js" />
