@@ -31,7 +31,20 @@ function ResolveDamage(damage: int, attacker : GameObject) {
 }
 
 function Die(damage: int, attacker : GameObject) {
-    DeadBodyManager.SpawnRagdoll(gameObject.transform.root, damage, attacker);
+    if(Network.connections.Length > 0 && gameObject.networkView != null) {
+        gameObject.networkView.RPC("SpawnRagdoll", 
+                                    RPCMode.AllBuffered, 
+                                    gameObject.transform.root.position,
+                                    gameObject.transform.root.rotation, 
+                                    damage, 
+                                    attacker.transform.position);
+    }
+    else {
+        SpawnRagdoll(   gameObject.transform.root.position,
+                        gameObject.transform.root.rotation, 
+                        damage, 
+                        attacker.transform.position);
+    }
     var spawnPoints: GameObject[] = GameObject.FindGameObjectsWithTag("SpawnPoint");
     var pointIndex: int = Random.Range(0.0, spawnPoints.length);
     var spawnPoint: GameObject = spawnPoints[pointIndex];
@@ -39,6 +52,12 @@ function Die(damage: int, attacker : GameObject) {
     ResetHealth();
     gameObject.transform.root.position = spawnPoint.transform.position;
 }
+
+@RPC
+function SpawnRagdoll(position : Vector3, rotation : Quaternion, damage: int, attackerPosition : Vector3) {
+    DeadBodyManager.SpawnRagdoll(position, rotation, damage, attackerPosition);
+}
+
 
 function ResetHealth() {
     health = Base.health();

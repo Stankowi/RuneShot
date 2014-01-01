@@ -4,19 +4,19 @@ import System.Collections.Generic;
 static var maxBodyCount : float = 10;
 static var bodyList : List.<GameObject> = new List.<GameObject>();
 
-static function SpawnRagdoll(transform : Transform, damage: int, attacker : GameObject) {
+static function SpawnRagdoll(position : Vector3, rotation : Quaternion, damage: int, attackerPosition : Vector3) {
     RestrictBodyCount();
     var ragdollExplosionMaxStrength : float = 24000;
     var ragdollExplosionRadius : float = 6;
     var explosionPercent = (parseFloat(damage))/(Base.health());
     var ragdoll : GameObject = GameObject.Instantiate(Resources.Load("Characters/Ragdoll"),
-                                                    transform.root.position,
-                                                    transform.root.rotation) as GameObject;
+                                                    position,
+                                                    rotation) as GameObject;
     bodyList.Add(ragdoll);
     
     if(ragdoll != null && ragdoll.rigidbody != null) {
         ragdoll.rigidbody.AddExplosionForce(ragdollExplosionMaxStrength * explosionPercent,
-                                            attacker.transform.position,
+                                            attackerPosition,
                                             ragdollExplosionRadius);
     }
 }
