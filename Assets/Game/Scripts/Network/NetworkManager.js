@@ -12,6 +12,7 @@ private var playerName: String;
 private var hostname: String = "localhost";
 private var hostport: String = "25000";
 private var isServerInitialized: boolean;
+private var scoreboard: GameObject = null;
 //private var enemyList: 
 //
 // public helper functions
@@ -155,6 +156,13 @@ function OnServerInitialized() {
 }
 
 function OnPlayerConnected( player: NetworkPlayer ) {
+    // Spawning the scoreboard on the first player connecting
+    // fixes an odd race condition where the network spawned object wouldn't propegate correctly
+    // when it was created before a character was connected.
+    if(scoreboard == null) {
+        SpawnScoreboard(player);
+    }
+    
     Debug.Log("Player connected from " + player.ipAddress + ":" + player.port);
     SpawnServerCharacter(player);
 }
@@ -191,6 +199,17 @@ function OnPlayerDisconnected( player: NetworkPlayer ) {
 // This is the location where game systems should add area initializtion hooks
 function InitializeServerSystems() {
     isServerInitialized = true;
+}
+
+function SpawnScoreboard(player) {
+    scoreboard = NetworkUtil.Instantiate(Resources.Load("UI/Scoreboard",GameObject),
+                                                Vector3.zero,
+                                                Quaternion.identity,
+                                                NetworkGroup.Scoreboard);
+    if(player != null) {
+        var score : Scoreboard = scoreboard.GetComponent(Scoreboard);
+        score.OnPlayerConnected(player);
+    }
 }
        
 //
@@ -241,6 +260,7 @@ function startSinglePlayer() {
     
     getSpawnPoint().spawnCharacter(false);
     SpawnServerCharacter(Network.player);
+    SpawnScoreboard(null);
     isServerInitialized = true;
 }
 

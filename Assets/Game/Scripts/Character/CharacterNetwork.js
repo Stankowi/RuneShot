@@ -50,6 +50,16 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
     SpawnRagdoll(position, rotation, damage, attackerPosition);
     EnableDeathCam();
     Invoke("Respawn",5);
+    // Only the server should be sending out the scoreboard updates.
+    if(Network.isServer) {
+        var scoreboardGO : GameObject = GameObject.Find("Scoreboard(Clone)");
+        if(scoreboardGO != null) {
+            var scoreboard : Scoreboard = scoreboardGO.GetComponent(Scoreboard);
+            if(scoreboard != null) {
+                scoreboard.AddDeath(transform.root.gameObject.networkView.owner);
+            }
+        }
+    }
 }
 
 function Respawn() {
