@@ -31,33 +31,30 @@ function ResolveDamage(damage: int, attacker : GameObject) {
 }
 
 function Die(damage: int, attacker : GameObject) {
+    var network = ComponentUtil.GetComponentInHierarchy(gameObject,CharacterNetwork);
     if(Network.connections.Length > 0 && gameObject.networkView != null) {
-        gameObject.networkView.RPC("SpawnRagdoll", 
+        network.gameObject.networkView.RPC("Die", 
                                     RPCMode.AllBuffered, 
                                     gameObject.transform.root.position,
                                     gameObject.transform.root.rotation, 
                                     damage, 
-                                    attacker.transform.position);
+                                    attacker.transform.position);        
     }
     else {
-        SpawnRagdoll(   gameObject.transform.root.position,
+        network.Die(   gameObject.transform.root.position,
                         gameObject.transform.root.rotation, 
                         damage, 
                         attacker.transform.position);
     }
-    var spawnPoints: GameObject[] = GameObject.FindGameObjectsWithTag("SpawnPoint");
-    var pointIndex: int = Random.Range(0.0, spawnPoints.length);
-    var spawnPoint: GameObject = spawnPoints[pointIndex];
 
     ResetHealth();
-    gameObject.transform.root.position = spawnPoint.transform.position;
+    
+    // when the player dies, disable his controls and switch to the "death camera"
+    var deathCam = transform.root.FindChild(PlayerDeathCamera.PrefabName());
+    if(deathCam != null) {
+        deathCam.gameObject.SetActive(true);
+    }
 }
-
-@RPC
-function SpawnRagdoll(position : Vector3, rotation : Quaternion, damage: int, attackerPosition : Vector3) {
-    DeadBodyManager.SpawnRagdoll(position, rotation, damage, attackerPosition);
-}
-
 
 function ResetHealth() {
     health = Base.health();

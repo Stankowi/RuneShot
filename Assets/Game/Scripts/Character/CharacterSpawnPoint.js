@@ -2,6 +2,7 @@
 private var controllerPrefab: GameObject;
 private var graphicsPrefab: GameObject;
 private var legacyPrefab: GameObject;
+private var deathPrefab: GameObject;
 
 // Spawn the camera in the head of the character
 private var cameraOffset = Vector3(0,1.5,0);
@@ -12,6 +13,7 @@ function Start () {
     controllerPrefab = Resources.Load("Characters/CharacterController", GameObject);
     graphicsPrefab = Resources.Load("Characters/CharacterGraphics", GameObject);
     legacyPrefab = Resources.Load("Characters/CharacterLegacy", GameObject);
+    deathPrefab = Resources.Load("Characters/DeathCamera", GameObject);
 }
 
 function spawnCharacter(networked: boolean) {
@@ -19,6 +21,10 @@ function spawnCharacter(networked: boolean) {
                                                 transform.position,
                                                 transform.rotation);
     
+    var death: GameObject = GameObject.Instantiate(deathPrefab,
+                                                transform.position,
+                                                transform.rotation);
+                                                
     var model: GameObject = NetworkUtil.Instantiate(graphicsPrefab,
                                                 transform.position,
                                                 transform.rotation,
@@ -33,10 +39,15 @@ function spawnCharacter(networked: boolean) {
     legacy.transform.parent = chr.transform;
     legacy.networkView.observed = chr.transform;
     
+    
     var camera = GameObject.Instantiate(cameraPrefab, transform.position, transform.rotation);
     camera.transform.parent = chr.transform;
     // Position the camera relative to the character, at an offset high enough up to be in the head.
     camera.transform.localPosition = cameraOffset;
+    
+    death.transform.parent = chr.transform;
+    death.transform.localPosition = Vector3(0,4,-6);
+    death.transform.LookAt(camera.transform);
     
     if(Network.connections.Length > 0) {
         legacy.networkView.RPC("reattachModel", RPCMode.AllBuffered, model.networkView.viewID);
