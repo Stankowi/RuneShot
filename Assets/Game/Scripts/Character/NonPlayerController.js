@@ -74,6 +74,7 @@ function Update () {
                 ++ currentWayPoint;
                 if (currentWayPoint >= curPath.vectorPath.Length) {
                     moveState = MoveState.Stand;
+                    motor.inputMoveDirection = Vector3.zero;
                     standTime = Random.Range(minStandTime, maxStandTime);
                     break;
                 }
@@ -93,6 +94,10 @@ function OnPathComplete(p: Pathfinding.Path) {
     if (!p.error) {
         moveState = MoveState.Moving;
         curPath = p;
+    }
+    else {
+        moveState = MoveState.Init;
+        curPath = null;
     }
 }
 
