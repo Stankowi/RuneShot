@@ -27,11 +27,14 @@ class WeaponDesc {
 
 function Start() {
     bouncyGranade = Resources.Load("Guns/BouncyGranade", GameObject);
+    rocket = Resources.Load("Guns/Rocket", GameObject);
 
     // Setup the weapons list
     weaponList["bouncyGranade"] = new WeaponDesc(bouncyGranade, "BouncyGranade", WeaponType.WeaponIsProjectile);
+    weaponList["rocket"] = new WeaponDesc(rocket, "Rocket", WeaponType.WeaponIsProjectile);
+    
     currentWeapon = weaponList["bouncyGranade"];
-}
+} 
 
 function Update () {
 }

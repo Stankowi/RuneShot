@@ -34,11 +34,12 @@ function Update () {
     
     var wpns = ComponentUtil.GetComponentInHierarchy(gameObject,Weapons);
     if (wpns != null) {
-        if (Input.GetKeyDown(KeyCode.B)) {
+    
+        if (Input.GetKeyDown(KeyCode.B) || Input.GetMouseButtonDown(0)) {
             wpns.StartPowerCalc();
         }
 
-        if (Input.GetKeyUp(KeyCode.B)) {
+        if (Input.GetKeyUp(KeyCode.B) || Input.GetMouseButtonUp(0)) {
             wpns.EndPowerCalc();
         }
     }
