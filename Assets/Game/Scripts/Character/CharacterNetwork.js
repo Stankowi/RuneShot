@@ -49,6 +49,7 @@ function AddKeyClient( player: NetworkPlayer, color: int ) {
 public function Die(position : Vector3, rotation : Quaternion, damage: int, attackerPosition : Vector3) {
     SpawnRagdoll(position, rotation, damage, attackerPosition);
     EnableDeathCam();
+    keyInventory.clearKeys();
     Invoke("Respawn",5);
     // Only the server should be sending out the scoreboard updates.
     if(Network.isServer) {
