@@ -51,6 +51,14 @@ function AddWeaponToInventory(name:String){
     }
 }
 
+function ResetInventory(){
+    //add weapons to inventory
+    weaponInventory.Clear();
+    AddWeaponToInventory("bouncyGranade");
+    
+    currentWeapon = weaponList["bouncyGranade"];
+}
+
 function Start() {
     bouncyGranade = Resources.Load("Guns/BouncyGranade", GameObject);
     rocket = Resources.Load("Guns/Rocket", GameObject);
@@ -60,10 +68,7 @@ function Start() {
     weaponList["rocket"] = new WeaponDesc(rocket, "Rocket", WeaponType.WeaponIsProjectile);
     
     //add weapons to inventory
-    weaponInventory.Clear();
-    AddWeaponToInventory("bouncyGranade");
-    
-    currentWeapon = weaponList["bouncyGranade"];
+    ResetInventory();    
 } 
 
 function Update () {

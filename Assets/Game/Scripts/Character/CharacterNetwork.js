@@ -51,6 +51,11 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
     EnableDeathCam();
     keyInventory.clearKeys();
     Invoke("Respawn",5);
+    
+    var weapons = ComponentUtil.GetComponentInHierarchy(localPlayer,typeof(Weapons)) as Weapons;
+    if ( weapons ) {
+        weapons.ResetInventory();
+    }
     // Only the server should be sending out the scoreboard updates.
     if(Network.isServer) {
         var scoreboardGO : GameObject = GameObject.Find("Scoreboard(Clone)");
