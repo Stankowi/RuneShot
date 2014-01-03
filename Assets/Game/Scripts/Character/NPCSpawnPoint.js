@@ -6,7 +6,7 @@ function Start () {
     
     npcControllerPrefab = Resources.Load("Characters/NPCController", GameObject);
     graphicsPrefab = Resources.Load("Characters/CharacterGraphics", GameObject);
-    legacyPrefab = Resources.Load("Characters/CharacterLegacy", GameObject);
+    legacyPrefab = Resources.Load("Characters/NPCLegacy", GameObject);
 }
 
 function spawnNPC(networked: boolean): GameObject {

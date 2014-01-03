@@ -22,8 +22,7 @@ function OnCollisionEnter(collision: Collision) {
         return;
     }
     var other: GameObject = collision.gameObject;
-    if (other.tag == "Player" && (collisions > 0 ||
-                                  (collisions <= 0 && !IsLauncher(other)))) {
+    if ((other.tag == "Player" || other.tag == "NPC") && (collisions > 0 || (collisions <= 0 && !IsLauncher(other)))) {
         transform.parent = other.transform;
         collider.enabled = false;
         GameObject.Destroy(rigidbody);
@@ -63,8 +62,9 @@ function GetDamage(): int {
 
      var damage: int = GetDamage();
      for(var hit in colliders) {
-        if(hit.gameObject.tag == "Player") {
-            ComponentUtil.GetComponentInHierarchy(hit.gameObject,"Health").ResolveDamage(damage, gameObject);
+        var h = ComponentUtil.GetComponentInHierarchy(hit.gameObject, "Health");
+        if (h != null) {
+            h.ResolveDamage(damage, gameObject);
         }
      }
      

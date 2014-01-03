@@ -19,6 +19,7 @@ private var isServerInitialized: boolean;
 private var scoreboard: GameObject = null;
 private var enemyList: Array = new Array();
 private var enemySpawnTimer: float = 0.0f;
+private var firstSpawn: boolean = false;
 
 //
 // public helper functions
@@ -57,8 +58,10 @@ function Update () {
 function updateGameLoop()
 {
     if (enemyList.Count < maxNPCs) {
-        if (enemyList.Count == 0)
+        if (!firstSpawn)
         {
+            firstSpawn = true;
+            
             var n = maxNPCs;
             if (n > npcSpawnPoints.Length)
                 n = npcSpawnPoints.Length;
@@ -67,7 +70,7 @@ function updateGameLoop()
                 enemyList.Push(npcSpawnPoints[i].spawnNPC(true));
             }
             enemySpawnTimer = Random.Range(minSpawnTime, maxSpawnTime);
-        }            
+        }     
         else {
             enemySpawnTimer -= Time.deltaTime;
             if (enemySpawnTimer <= 0.0f) {
@@ -288,6 +291,15 @@ function startSinglePlayer() {
     SpawnServerCharacter(Network.player);
     SpawnScoreboard(null);
     isServerInitialized = true;
+}
+
+function OnNPCDeath(npc: GameObject) {
+    for (i = 0; i < enemyList.Count; ++ i) {
+        if (enemyList[i] == npc) {
+            enemyList.RemoveAt(i);
+            break;
+        }
+    }
 }
 
 //

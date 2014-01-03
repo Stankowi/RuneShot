@@ -8,12 +8,12 @@ private var mainGUI: MainGUI;
 function Awake() {
     character = ComponentUtil.GetComponentInHierarchy(gameObject,Character);
     player = ComponentUtil.GetComponentInHierarchy(gameObject,PlayerCharacter);
-
+    
     networkManager = GameObject.FindObjectOfType(NetworkManager);
     mainGUI = GameObject.FindObjectOfType(MainGUI);
 
     // if this is the controlling Client's Health component, notify the main UI element
-    if( networkManager != null && networkManager.IsMyPlayerCharacter(player) ) {
+    if( player != null && networkManager != null && networkManager.IsMyPlayerCharacter(player)) {
         if( mainGUI != null ) {
            mainGUI.SetPlayerHealth( this );
         }
@@ -32,27 +32,35 @@ function ResolveDamage(damage: int, attacker : GameObject) {
 
 function Die(damage: int, attacker : GameObject) {
     var network = ComponentUtil.GetComponentInHierarchy(gameObject,CharacterNetwork);
-    if(Network.connections.Length > 0 && gameObject.networkView != null) {
-        network.gameObject.networkView.RPC("Die", 
-                                    RPCMode.AllBuffered, 
-                                    gameObject.transform.root.position,
-                                    gameObject.transform.root.rotation, 
-                                    damage, 
-                                    attacker.transform.position);        
-    }
-    else {
-        network.Die(   gameObject.transform.root.position,
-                        gameObject.transform.root.rotation, 
-                        damage, 
-                        attacker.transform.position);
+    if (network != null) {
+        if(Network.connections.Length > 0 && gameObject.networkView != null) {
+            network.gameObject.networkView.RPC("Die", 
+                                        RPCMode.AllBuffered, 
+                                        gameObject.transform.root.position,
+                                        gameObject.transform.root.rotation, 
+                                        damage, 
+                                        attacker.transform.position);        
+        }
+        else {
+            network.Die(   gameObject.transform.root.position,
+                            gameObject.transform.root.rotation, 
+                            damage, 
+                            attacker.transform.position);
+        }
     }
 
-    ResetHealth();
-    
     // when the player dies, disable his controls and switch to the "death camera"
-    var deathCam = transform.root.FindChild(PlayerDeathCamera.PrefabName());
-    if(deathCam != null) {
-        deathCam.gameObject.SetActive(true);
+    if (player != null) {
+        ResetHealth();
+        
+        var deathCam = transform.root.FindChild(PlayerDeathCamera.PrefabName());
+        if(deathCam != null) {
+            deathCam.gameObject.SetActive(true);
+        }
+    }
+    else {
+        networkManager.OnNPCDeath(transform.parent.gameObject);
+        GameObject.Destroy(transform.parent.gameObject);
     }
 }
 

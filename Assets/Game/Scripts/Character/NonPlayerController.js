@@ -36,7 +36,7 @@ function Awake () {
 
 // Update is called once per frame
 function Update () {
-    var wpns = GetComponent(Weapons);
+    var wpns = ComponentUtil.GetComponentInHierarchy(gameObject,Weapons);
     if (wpns != null) {
         switch (attackState) {
             case AttackState.AttackCharging: 
