@@ -2,6 +2,7 @@ private var powerCalcStart: int = 0;
 private var bouncyGranade: GameObject = null;
 private var currentWeapon: WeaponDesc = null;
 private var weaponList: Hashtable = new Hashtable();
+private var weaponInventory: Array = new Array();
 private static var serverCache: Hashtable = new Hashtable();
 
 enum WeaponType {
@@ -25,6 +26,31 @@ class WeaponDesc {
     }
 }
 
+function ToggleWeapon() {
+
+    var currentIndex = -1;
+    for (var i = 0; i < weaponInventory.length; ++i){
+        if(currentWeapon == weaponInventory[i]) {
+            currentIndex = i;
+        }
+    }
+    var nextIndex = (currentIndex + 1) % weaponInventory.length;
+    currentWeapon = weaponInventory[nextIndex];
+}
+
+function AddWeaponToInventory(name:String){
+    var alreadPickedUp = false;
+    for (var i = 0; i < weaponInventory.length; ++i){
+        if(weaponInventory[i] == weaponList[name]) {
+            alreadPickedUp = true;
+            break;
+        }
+    }
+    if(!alreadPickedUp){
+        weaponInventory.Push(weaponList[name]);
+    }
+}
+
 function Start() {
     bouncyGranade = Resources.Load("Guns/BouncyGranade", GameObject);
     rocket = Resources.Load("Guns/Rocket", GameObject);
@@ -32,6 +58,10 @@ function Start() {
     // Setup the weapons list
     weaponList["bouncyGranade"] = new WeaponDesc(bouncyGranade, "BouncyGranade", WeaponType.WeaponIsProjectile);
     weaponList["rocket"] = new WeaponDesc(rocket, "Rocket", WeaponType.WeaponIsProjectile);
+    
+    //add weapons to inventory
+    weaponInventory.Clear();
+    AddWeaponToInventory("bouncyGranade");
     
     currentWeapon = weaponList["bouncyGranade"];
 } 
@@ -128,4 +158,30 @@ function FacingVector() {
 
 function CallRemote(): boolean {
     return ComponentUtil.GetComponentInHierarchy(gameObject,"Character").CallRemote();
+}
+
+function OnGUI () {
+
+    var keyWidth = 64;
+    var keyHeight = 64;
+    var margin = 10;
+    
+    var titleWidth = (keyWidth*3+margin*3);
+    var titleHeight = 30;
+    var y = titleHeight+128;
+    
+    GUI.Box(Rect(Screen.width-titleWidth,y,titleWidth,titleHeight),"Weapon Inventory");
+    y += titleHeight + margin;
+    
+    //GUIStyle mystyle = CloneGUIStyle(GUI.skin.box);
+    for (var i = 0; i < weaponInventory.length; ++i){
+        if(weaponInventory[i] == currentWeapon ){
+            GUI.color = Color.red;
+        } else {
+            GUI.color = Color.white;
+        }
+        GUI.Box(Rect(Screen.width-(titleWidth*0.75),y,titleWidth/2,titleHeight),weaponInventory[i].name);
+        
+        y += titleHeight + margin;
+    }
 }

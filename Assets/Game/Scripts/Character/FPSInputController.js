@@ -42,6 +42,10 @@ function Update () {
         if (Input.GetKeyUp(KeyCode.B) || Input.GetMouseButtonUp(0)) {
             wpns.EndPowerCalc();
         }
+        
+        if (Input.GetKeyUp(KeyCode.F)) {
+            wpns.ToggleWeapon();
+        }
     }
 }
 

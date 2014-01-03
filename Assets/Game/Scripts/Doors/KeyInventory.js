@@ -35,7 +35,7 @@ function OnGUI () {
     var margin = 10;
     
     var titleWidth = (keyWidth*3+margin*3);
-    var titleHeight = Screen.height/20;
+    var titleHeight = 30;
     var y = titleHeight*2 + margin;
     
     if( keys[DoorColor.Red] ) {
