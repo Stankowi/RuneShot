@@ -1,6 +1,9 @@
 ﻿
 // needs to be a globally (globe -> earth) unique name for this game
 var gameName: String = "2013 RuneShot Game Jam";
+var maxNPCs: int = 8;
+var minSpawnTime: float = 4.0f;
+var maxSpawnTime: float = 8.0f;
 
 
 private var hostData: HostData[];
@@ -8,12 +11,15 @@ private var refreshing: boolean;
 private var isInitialized: boolean;
 private var isSinglePlayer: boolean;
 private var playerSpawnPoints: CharacterSpawnPoint[];
+private var npcSpawnPoints: NPCSpawnPoint[];
 private var playerName: String;
 private var hostname: String = "localhost";
 private var hostport: String = "25000";
 private var isServerInitialized: boolean;
 private var scoreboard: GameObject = null;
-//private var enemyList: 
+private var enemyList: Array = new Array();
+private var enemySpawnTimer: float = 0.0f;
+
 //
 // public helper functions
 //
@@ -35,7 +41,7 @@ function IsSinglePlayer(): boolean {
 function Start () {
     
     playerSpawnPoints = GameObject.FindObjectsOfType(CharacterSpawnPoint);
-    
+    npcSpawnPoints = GameObject.FindObjectsOfType(NPCSpawnPoint);
     playerName = PlayerPrefs.GetString("Player Name", System.Environment.UserName);
 }
 
@@ -50,7 +56,27 @@ function Update () {
 
 function updateGameLoop()
 {
-    
+    if (enemyList.Count < maxNPCs) {
+        if (enemyList.Count == 0)
+        {
+            var n = maxNPCs;
+            if (n > npcSpawnPoints.Length)
+                n = npcSpawnPoints.Length;
+            
+            for (i = 0; i < n; ++ i) {
+                enemyList.Push(npcSpawnPoints[i].spawnNPC(true));
+            }
+            enemySpawnTimer = Random.Range(minSpawnTime, maxSpawnTime);
+        }            
+        else {
+            enemySpawnTimer -= Time.deltaTime;
+            if (enemySpawnTimer <= 0.0f) {
+                // spawn an enemy
+                enemyList.Push(getNPCSpawnPoint().spawnNPC(true));
+                enemySpawnTimer = Random.Range(minSpawnTime, maxSpawnTime);
+            }
+        }
+    }
 }
 
 function OnGUI() {
@@ -235,7 +261,7 @@ function connectToServer( hostname: String, port: int ) {
 
 function OnConnectedToServer() {
 
-    getSpawnPoint().spawnCharacter(true);
+    getCharacterSpawnPoint().spawnCharacter(true);
 }
 
 function OnDisconnectedFromServer(info: NetworkDisconnection) {
@@ -258,7 +284,7 @@ function OnFailedToConnect( error: NetworkConnectionError ) {
 
 function startSinglePlayer() {
     
-    getSpawnPoint().spawnCharacter(false);
+    getCharacterSpawnPoint().spawnCharacter(false);
     SpawnServerCharacter(Network.player);
     SpawnScoreboard(null);
     isServerInitialized = true;
@@ -268,9 +294,14 @@ function startSinglePlayer() {
 // Utility functions
 //
 
-private function getSpawnPoint(): CharacterSpawnPoint {
+private function getCharacterSpawnPoint(): CharacterSpawnPoint {
 
     return playerSpawnPoints[ Random.Range(0, playerSpawnPoints.length) ];
+}
+
+private function getNPCSpawnPoint(): NPCSpawnPoint {
+
+    return npcSpawnPoints[ Random.Range(0, npcSpawnPoints.length) ];
 }
 
 function IsMyPlayerCharacter(player: PlayerCharacter): boolean {

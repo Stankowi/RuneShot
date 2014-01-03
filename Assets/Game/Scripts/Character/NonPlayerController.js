@@ -3,15 +3,35 @@ enum AttackState {
     AttackCharging
 };
 
+enum MoveState {
+    Init,
+    PathFinding,
+    Moving,
+    Stand,
+}
+
+var minAttackDelay: float = 2.0f;
+var maxAttackDelay: float = 8.0f;
+var minStandTime: float = 4.0f;
+var maxStandTime: float = 10.0f;
+
 private var motor : CharacterMotor;
 private var attackTimer : float;
 private var chargeTimer : float;
 private var attackState : AttackState = AttackState.AttackWaiting;
+private var seeker: Seeker = null;
+private var curPath: Pathfinding.Path = null;
+private var currentWayPoint: int = 0;
+private var moveState: MoveState = MoveState.Init;
+private var nextWayPointDistance: float = 3.0f;
+private var standTime: float = 0.0f;
 
 // Use this for initialization
 function Awake () {
-	motor = GetComponent(CharacterMotor);
-    attackTimer = Random.Range(2.0f, 4.0f);
+    motor = GetComponent(CharacterMotor);
+    attackTimer = Random.Range(minAttackDelay, maxAttackDelay);
+    seeker = GetComponent(Seeker);
+    moveState = MoveState.Init;
 }
 
 // Update is called once per frame
@@ -24,7 +44,7 @@ function Update () {
                 if (chargeTimer <= 0.0f) {
                     wpns.EndPowerCalc();
                     attackState = AttackState.AttackWaiting;
-                    attackTimer = Random.Range(2.0f, 4.0f);
+                    attackTimer = Random.Range(minAttackDelay, maxAttackDelay);
                 }
                 break;
             
@@ -33,37 +53,47 @@ function Update () {
                 if (attackTimer <= 0.0f) {
                     wpns.StartPowerCalc();
                     attackState = AttackState.AttackCharging;
-                    chargeTimer = Random.Range(2.0f, 4.0f);
+                    chargeTimer = Random.Range(minAttackDelay, maxAttackDelay);
                 }
             
         }
     }    
-    /*
+    switch (moveState) {
+        case MoveState.Init:
+            // Pick a random target
+            var moveTargets = GameObject.FindGameObjectsWithTag("CoverPoint");
+            if (moveTargets != null && moveTargets.Length) {            
+                seeker.StartPath(this.transform.position, moveTargets[Random.
+                    Range(0, moveTargets.Length)].transform.position, OnPathComplete);
+                moveState = MoveState.PathFinding;
+                currentWayPoint = 0;
+            }
+            break;
+        case MoveState.Moving:
+            if (Vector3.Distance(curPath.vectorPath[currentWayPoint], transform.position) < nextWayPointDistance) {
+                ++ currentWayPoint;
+                if (currentWayPoint >= curPath.vectorPath.Length) {
+                    moveState = MoveState.Stand;
+                    standTime = Random.Range(minStandTime, maxStandTime);
+                    break;
+                }
+            }
+            motor.inputMoveDirection = (curPath.vectorPath[currentWayPoint] - transform.position).normalized;
+            break;
+        case MoveState.Stand:
+            standTime -= Time.deltaTime;
+            if (standTime <= 0.0f) { 
+                moveState = MoveState.Init;
+            }
+            break;
+    }
+}
 
-	// Get the input vector from keyboard or analog stick
-	var directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-	
-	if (directionVector != Vector3.zero) {
-		// Get the length of the directon vector and then normalize it
-		// Dividing by the length is cheaper than normalizing when we already have the length anyway
-		var directionLength = directionVector.magnitude;
-		directionVector = directionVector / directionLength;
-		
-		// Make sure the length is no bigger than 1
-		directionLength = Mathf.Min(1, directionLength);
-		
-		// Make the input vector more sensitive towards the extremes and less sensitive in the middle
-		// This makes it easier to control slow speeds when using analog sticks
-		directionLength = directionLength * directionLength;
-		
-		// Multiply the normalized direction vector by the modified length
-		directionVector = directionVector * directionLength;
-	}
-	
-	// Apply the direction to the CharacterMotor
-	motor.inputMoveDirection = transform.rotation * directionVector;
-	motor.inputJump = Input.GetButton("Jump");
-    */
+function OnPathComplete(p: Pathfinding.Path) {
+    if (!p.error) {
+        moveState = MoveState.Moving;
+        curPath = p;
+    }
 }
 
 // Require a character controller to be attached to the same game object
