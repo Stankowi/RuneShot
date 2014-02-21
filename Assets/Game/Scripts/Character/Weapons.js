@@ -62,10 +62,12 @@ function ResetInventory(){
 function Start() {
     bouncyGranade = Resources.Load("Guns/BouncyGranade", GameObject);
     rocket = Resources.Load("Guns/Rocket", GameObject);
+    laser = Resources.Load("Guns/Laser", GameObject);
 
     // Setup the weapons list
     weaponList["bouncyGranade"] = new WeaponDesc(bouncyGranade, "BouncyGranade", WeaponType.WeaponIsProjectile);
     weaponList["rocket"] = new WeaponDesc(rocket, "Rocket", WeaponType.WeaponIsProjectile);
+    weaponList["laser"] = new WeaponDesc(laser, "Laser", WeaponType.WeaponIsProjectile);
     
     //add weapons to inventory
     ResetInventory();    
