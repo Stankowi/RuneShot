@@ -11,6 +11,7 @@ GameObject:
   - 15: {fileID: 1500000}
   - 12: {fileID: 1200000}
   - 26: {fileID: 2600000}
+  - 114: {fileID: 11400000}
   m_Layer: 0
   m_Name: Sparks
   m_TagString: Untagged
@@ -94,7 +95,7 @@ EllipsoidParticleEmitter:
   Simulate in Worldspace?: 1
   m_OneShot: 1
   m_Ellipsoid: {x: 0, y: 0, z: 0}
-  m_MinEmitterRange: 0
+  m_MinEmitterRange: 5
 --- !u!1002 &1500001
 EditorExtensionImpl:
   serializedVersion: 6
@@ -135,6 +136,19 @@ EditorExtensionImpl:
 --- !u!1002 &5300001
 EditorExtensionImpl:
   serializedVersion: 6
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 599a48b74d542124f8f7f6710de72287, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  despawnTimer: 15
+  runOnce: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
