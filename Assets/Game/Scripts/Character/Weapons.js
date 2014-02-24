@@ -100,7 +100,7 @@ function EndPowerCalc() {
                         Network.player,
                         transform.position,
                         facing);
-        return null;
+         return null;
     }
 
    if (this.powerCalcStart == 0) {
@@ -160,7 +160,12 @@ function TriggerNonProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, f
 }
 
 function FacingVector() {
-    return Camera.main.transform.forward;
+    if (Camera.main != null)
+    {
+        return Camera.main.transform.forward;
+    }
+    
+    return Vector3(0,0,0);
 }
 
 function CallRemote(): boolean {

@@ -75,8 +75,8 @@ function Trigger(launchingPlayer: GameObject, facing: Vector3, pressDuration: in
     triggered = true;
     this.launchingPlayer = launchingPlayer;
     gameObject.transform.forward = facing;
+    rigidbody.AddRelativeForce(Vector3(0,0,1000));
     // The grenade should not collide with the player that spawns it until it is safely outside that player.
     // The easiest way to accomplish this is to tell Physics to ignore collision between the player and the grenade.
     Physics.IgnoreCollision(launchingPlayer.collider,gameObject.collider);
-    rigidbody.AddRelativeForce(Vector3(0,0,1000));
 }
