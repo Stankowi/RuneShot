@@ -94,6 +94,7 @@ function StartPowerCalcRemote(networkPlayer: NetworkPlayer) {
 function EndPowerCalc() {
     var facing: Vector3 = FacingVector();
 
+    var pos : Vector3 = GetProjectileOrigin();
     if (CallRemote()) {
         networkView.RPC("EndPowerCalcRemote",
                         RPCMode.Server,
@@ -170,6 +171,16 @@ function FacingVector() {
 
 function CallRemote(): boolean {
     return ComponentUtil.GetComponentInHierarchy(gameObject,"Character").CallRemote();
+}
+
+function GetProjectileOrigin() : Vector3
+{
+    if (Camera.main != null)
+    {
+        return Camera.main.ScreenToWorldPoint(Vector3(Screen.width/2, Screen.height/2, Camera.main.nearClipPlane));
+    }
+    
+    return Vector3(0,0,0);
 }
 
 function OnGUI () {

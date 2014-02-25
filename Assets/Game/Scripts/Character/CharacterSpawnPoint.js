@@ -3,6 +3,7 @@ private var controllerPrefab: GameObject;
 private var graphicsPrefab: GameObject;
 private var legacyPrefab: GameObject;
 private var deathPrefab: GameObject;
+private var crosshairPrefab: GameObject;
 
 // Spawn the camera in the head of the character
 private var cameraOffset = Vector3(0,1.5,0);
@@ -14,6 +15,7 @@ function Start () {
     graphicsPrefab = Resources.Load("Characters/CharacterGraphics", GameObject);
     legacyPrefab = Resources.Load("Characters/CharacterLegacy", GameObject);
     deathPrefab = Resources.Load("Characters/DeathCamera", GameObject);
+    crosshairPrefab = Resources.Load("Characters/Crosshair", GameObject);
 }
 
 function spawnCharacter(networked: boolean) {
@@ -34,6 +36,9 @@ function spawnCharacter(networked: boolean) {
                                                 transform.position,
                                                 transform.rotation,
                                                 NetworkGroup.CharacterLegacy);
+                                                
+    Instantiate(crosshairPrefab);
+                                              
     model.transform.parent = chr.transform;
     model.networkView.observed = chr.transform;
     legacy.transform.parent = chr.transform;
@@ -44,6 +49,8 @@ function spawnCharacter(networked: boolean) {
     camera.transform.parent = chr.transform;
     // Position the camera relative to the character, at an offset high enough up to be in the head.
     camera.transform.localPosition = cameraOffset;
+    
+    Screen.lockCursor = true;
     
     death.transform.parent = chr.transform;
     death.transform.localPosition = Vector3(0,4,-6);
