@@ -93,8 +93,7 @@ function StartPowerCalcRemote(networkPlayer: NetworkPlayer) {
 
 function EndPowerCalc() {
     var facing: Vector3 = FacingVector();
-
-    var pos : Vector3 = GetProjectileOrigin();
+    
     if (CallRemote()) {
         networkView.RPC("EndPowerCalcRemote",
                         RPCMode.Server,
@@ -154,16 +153,27 @@ function TriggerNonProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, f
     if (CallRemote()) {
         weapon = Network.Instantiate(weaponDesc.obj, weaponPos, Quaternion.identity, 12);
     } else {
-        weapon = Instantiate(weaponDesc.obj, weaponPos, Quaternion.identity);
+        var rot = Quaternion.FromToRotation(Camera.main.transform.forward, facing);
+        weapon = Instantiate(weaponDesc.obj, weaponPos, rot);
     }
-
     weaponDesc.Component(weapon).Trigger(gameObject.transform.root.gameObject, facing, pressDuration);
 }
 
 function FacingVector() {
     if (Camera.main != null)
     {
-        return Camera.main.transform.forward;
+        var dir : Vector3;
+        
+        var projRay : Ray = Camera.main.ViewportPointToRay(Vector3(0.5, 0.5, 0));
+        var hit : RaycastHit;
+        
+        if (Physics.Raycast(projRay, hit)) {
+            dir = (hit.point - transform.position).normalized;
+        } else {
+            dir = projRay.direction;
+        }
+        
+        return projRay.direction;
     }
     
     return Vector3(0,0,0);
@@ -171,16 +181,6 @@ function FacingVector() {
 
 function CallRemote(): boolean {
     return ComponentUtil.GetComponentInHierarchy(gameObject,"Character").CallRemote();
-}
-
-function GetProjectileOrigin() : Vector3
-{
-    if (Camera.main != null)
-    {
-        return Camera.main.ScreenToWorldPoint(Vector3(Screen.width/2, Screen.height/2, Camera.main.nearClipPlane));
-    }
-    
-    return Vector3(0,0,0);
 }
 
 function OnGUI () {
