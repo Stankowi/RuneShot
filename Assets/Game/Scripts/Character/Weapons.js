@@ -120,9 +120,21 @@ function EndPowerCalcRemote(networkPlayer: NetworkPlayer, position: Vector3, fac
     }
 
     var end = Time.time;
-    Trigger(position, facing, end - serverCache[networkPlayer]);
+    var duration: int = end - serverCache[networkPlayer];
+    networkView.RPC("TriggerRemote",
+                RPCMode.Others,
+                Network.player,
+                position,
+                facing,
+                duration);
     serverCache[networkPlayer] = 0;
     return null;
+}
+
+@RPC
+function TriggerRemote(player: NetworkPlayer, position: Vector3, facing: Vector3, pressDuration: int) {
+
+    Trigger(position, facing, pressDuration);
 }
 
 function Trigger(position: Vector3, facing: Vector3, pressDuration: int) {
@@ -149,13 +161,9 @@ function TriggerProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, faci
 
 function TriggerNonProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, facing: Vector3, pressDuration: int) {
     var weaponPos = position + Vector3(0,1,0);
-
-    if (CallRemote()) {
-        weapon = Network.Instantiate(weaponDesc.obj, weaponPos, Quaternion.identity, 12);
-    } else {
-        var rot = Quaternion.FromToRotation(Camera.main.transform.forward, facing);
-        weapon = Instantiate(weaponDesc.obj, weaponPos, rot);
-    }
+    
+    var rot = Quaternion.FromToRotation(Camera.main.transform.forward, facing);
+    weapon = Instantiate(weaponDesc.obj, weaponPos, rot);
     weaponDesc.Component(weapon).Trigger(gameObject.transform.root.gameObject, facing, pressDuration);
 }
 
