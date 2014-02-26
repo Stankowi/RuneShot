@@ -26,14 +26,35 @@ class WeaponDesc {
     }
 }
 
-function ToggleWeapon() {
-
+function GetCurrentWeaponInventoryIndex()
+{
     var currentIndex = -1;
     for (var i = 0; i < weaponInventory.length; ++i){
         if(currentWeapon == weaponInventory[i]) {
             currentIndex = i;
         }
     }
+    
+    return currentIndex;
+}
+
+//Get the key associated with the current weapon. Used to send to server.
+function GetCurrentWeaponListKey()
+{
+    var currentKey: String = "";
+    for (var weapon:String in weaponList.Keys){
+        if(currentWeapon == weaponList[weapon]) {
+            currentKey = weapon;
+        }
+    }
+    
+    return currentKey;
+}
+
+function ToggleWeapon() {
+
+    var currentIndex = GetCurrentWeaponInventoryIndex();
+    
     var nextIndex = (currentIndex + 1) % weaponInventory.length;
     currentWeapon = weaponInventory[nextIndex];
 }
@@ -99,7 +120,8 @@ function EndPowerCalc() {
                         RPCMode.Server,
                         Network.player,
                         transform.position,
-                        facing);
+                        facing,
+                        GetCurrentWeaponListKey());
          return null;
     }
 
@@ -108,13 +130,13 @@ function EndPowerCalc() {
     }
 
     var end = Time.time;
-    Trigger(transform.position, facing, end - this.powerCalcStart);
+    Trigger(transform.position, facing, GetCurrentWeaponListKey(), end - this.powerCalcStart);
     powerCalcStart = 0;
     return null;
 }
 
 @RPC
-function EndPowerCalcRemote(networkPlayer: NetworkPlayer, position: Vector3, facing: Vector3) {
+function EndPowerCalcRemote(networkPlayer: NetworkPlayer, position: Vector3, facing: Vector3, weaponKey: String) {
     if (! serverCache.Contains(networkPlayer)) {
         return null;
     }
@@ -126,29 +148,31 @@ function EndPowerCalcRemote(networkPlayer: NetworkPlayer, position: Vector3, fac
                 Network.player,
                 position,
                 facing,
+                weaponKey,
                 duration);
     serverCache[networkPlayer] = 0;
     return null;
 }
 
 @RPC
-function TriggerRemote(player: NetworkPlayer, position: Vector3, facing: Vector3, pressDuration: int) {
+function TriggerRemote(player: NetworkPlayer, position: Vector3, facing: Vector3, weaponKey: String, pressDuration: int) {
 
-    Trigger(position, facing, pressDuration);
+    Trigger(position, facing, weaponKey, pressDuration);
 }
 
-function Trigger(position: Vector3, facing: Vector3, pressDuration: int) {
+function Trigger(position: Vector3, facing: Vector3, weaponKey: String, pressDuration: int) {
 
-    if (currentWeapon == null) {
+    var weapon: WeaponDesc = weaponList[weaponKey];
+    if (weapon == null) {
         return null;
     }
 
-    switch (currentWeapon.type) {
+    switch (weapon.type) {
         case WeaponType.WeaponProducesProjectile:
-        TriggerProjectileWeapon(currentWeapon, position, facing, pressDuration);
+        TriggerProjectileWeapon(weapon, position, facing, pressDuration);
         break;
     case WeaponType.WeaponIsProjectile:
-        TriggerNonProjectileWeapon(currentWeapon, position, facing, pressDuration);
+        TriggerNonProjectileWeapon(weapon, position, facing, pressDuration);
         break;
     }
 
