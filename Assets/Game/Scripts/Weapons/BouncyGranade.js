@@ -68,11 +68,7 @@ class BouncyGranade extends Weapon {
             }
          }
          
-        if(Network.connections.Length > 0) {
-            Network.Destroy(gameObject);
-        } else {
-            Destroy(gameObject);
-        }
+        Destroy(gameObject);
      }
 
     function Trigger(launchingPlayer: GameObject, facing: Vector3, pressDuration: int) {
