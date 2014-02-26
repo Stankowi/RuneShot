@@ -58,7 +58,13 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
 }
 
 @RPC
-public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rotation : Quaternion, damage: int, attackerPos: Vector3) {
+public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rotation : Quaternion, damage: int, attackerPos: Vector3, attackerID: NetworkViewID) {
+    var attacker: GameObject = null;
+    var attackerNV = NetworkView.Find(attackerID);
+    if (attackerNV != null)
+    {
+        attacker = attackerNV.gameObject;
+    }
     // Only the server should be sending out the scoreboard updates.
     if(Network.isServer) {
         var scoreboardGO : GameObject = GameObject.Find("Scoreboard(Clone)");
@@ -66,11 +72,16 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
             var scoreboard : Scoreboard = scoreboardGO.GetComponent(Scoreboard);
             if(scoreboard != null) {
                 scoreboard.AddDeath(networkPlayer);
+
+                var networkChar = ComponentUtil.GetComponentInHierarchy(attacker,typeof(CharacterNetwork)) as CharacterNetwork;
+                if (networkChar != null){
+                    scoreboard.AddKill(networkChar.networkPlayer);
+                }
             }
         }
+    } else {
+        Die(position, rotation, damage, attackerPos);
     }
-    
-    Die(position, rotation, damage, attackerPos);
 }
 
 function Respawn() {
