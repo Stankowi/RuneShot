@@ -34,8 +34,9 @@ function Die(damage: int, attacker : GameObject) {
     var network = ComponentUtil.GetComponentInHierarchy(gameObject,CharacterNetwork);
     if (network != null) {
         if(Network.connections.Length > 0 && gameObject.networkView != null) {
-            network.gameObject.networkView.RPC("Die", 
-                                        RPCMode.AllBuffered, 
+            network.gameObject.networkView.RPC("DieRemote", 
+                                        RPCMode.AllBuffered,
+                                        Network.player, 
                                         gameObject.transform.root.position,
                                         gameObject.transform.root.rotation, 
                                         damage, 

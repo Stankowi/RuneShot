@@ -45,9 +45,8 @@ function AddKeyClient( player: NetworkPlayer, color: int ) {
     }
 }
 
-@RPC
-public function Die(position : Vector3, rotation : Quaternion, damage: int, attackerPosition : Vector3) {
-    SpawnRagdoll(position, rotation, damage, attackerPosition);
+public function Die(position : Vector3, rotation : Quaternion, damage: int, attackerPos: Vector3) {
+    SpawnRagdoll(position, rotation, damage, attackerPos);
     EnableDeathCam();
     keyInventory.clearKeys();
     Invoke("Respawn",5);
@@ -56,16 +55,22 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
     if ( weapons ) {
         weapons.ResetInventory();
     }
+}
+
+@RPC
+public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rotation : Quaternion, damage: int, attackerPos: Vector3) {
     // Only the server should be sending out the scoreboard updates.
     if(Network.isServer) {
         var scoreboardGO : GameObject = GameObject.Find("Scoreboard(Clone)");
         if(scoreboardGO != null) {
             var scoreboard : Scoreboard = scoreboardGO.GetComponent(Scoreboard);
             if(scoreboard != null) {
-                scoreboard.AddDeath(transform.root.gameObject.networkView.owner);
+                scoreboard.AddDeath(networkPlayer);
             }
         }
     }
+    
+    Die(position, rotation, damage, attackerPos);
 }
 
 function Respawn() {
