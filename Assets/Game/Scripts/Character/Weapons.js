@@ -113,54 +113,6 @@ function StartPowerCalcRemote(networkPlayer: NetworkPlayer) {
 }
 
 function EndPowerCalc() {
-    if (Network.connections.Length > 0) {
-        networkView.RPC("EndPowerCalcRemote",
-                        RPCMode.Server,
-                        Network.player,
-                        GetCurrentWeaponListKey());
-         return null;
-    }
-
-   if (this.powerCalcStart == 0) {
-        return null;
-    }
-
-    var end = Time.time;
-    Trigger(GetCurrentWeaponListKey(), end - this.powerCalcStart);
-    powerCalcStart = 0;
-    return null;
-}
-
-@RPC
-function EndPowerCalcRemote(networkPlayer: NetworkPlayer, weaponKey: String) {
-    if (! serverCache.Contains(networkPlayer)) {
-        return null;
-    }
-
-    var end = Time.time;
-    var duration: int = end - serverCache[networkPlayer];
-    networkView.RPC("TriggerRemote",
-                RPCMode.Others,
-                Network.player,
-                weaponKey,
-                duration);
-    serverCache[networkPlayer] = 0;
-    return null;
-}
-
-@RPC
-function TriggerRemote(player: NetworkPlayer, weaponKey: String, pressDuration: int) {
-
-    Trigger(weaponKey, pressDuration);
-}
-
-function Trigger(weaponKey: String, pressDuration: int) {
-
-    var weapon: WeaponDesc = weaponList[weaponKey];
-    if (weapon == null) {
-        return null;
-    }
-    
     //Try and get the weapon model
     var cam = transform.root.transform.Find("PlayerCamera(Clone)");
     var weaponPos = transform.position + Vector3(0,1,0);
@@ -171,12 +123,66 @@ function Trigger(weaponKey: String, pressDuration: int) {
     }
     
     var facing: Vector3 = GetFacingVector(weaponPos);
+    
+    if (Network.connections.Length > 0) {
+        networkView.RPC("EndPowerCalcRemote",
+                        RPCMode.Server,
+                        Network.player,
+                        GetCurrentWeaponListKey(),
+                        weaponPos,
+                        facing);
+         return null;
+    }
+
+   if (this.powerCalcStart == 0) {
+        return null;
+    }
+
+    var end = Time.time;
+    Trigger(GetCurrentWeaponListKey(), weaponPos, facing, end - this.powerCalcStart);
+    powerCalcStart = 0;
+    return null;
+}
+
+@RPC
+function EndPowerCalcRemote(networkPlayer: NetworkPlayer, weaponKey: String, position: Vector3, facing: Vector3) {
+    if (! serverCache.Contains(networkPlayer)) {
+        return null;
+    }
+
+    var end = Time.time;
+    var duration: int = end - serverCache[networkPlayer];
+    networkView.RPC("TriggerRemote",
+                RPCMode.Others,
+                Network.player,
+                weaponKey,
+                position,
+                facing,
+                duration);
+    serverCache[networkPlayer] = 0;
+    return null;
+}
+
+@RPC
+function TriggerRemote(player: NetworkPlayer, weaponKey: String, position: Vector3, facing: Vector3, pressDuration: int) {
+
+    Trigger(weaponKey, position, facing, pressDuration);
+}
+
+function Trigger(weaponKey: String, position: Vector3, facing: Vector3, pressDuration: int) {
+
+    var weapon: WeaponDesc = weaponList[weaponKey];
+    if (weapon == null) {
+        return null;
+    }
+    
+
     switch (weapon.type) {
         case WeaponType.WeaponProducesProjectile:
-        TriggerProjectileWeapon(weapon, weaponPos, facing, pressDuration);
+        TriggerProjectileWeapon(weapon, position, facing, pressDuration);
         break;
     case WeaponType.WeaponIsProjectile:
-        TriggerNonProjectileWeapon(weapon, weaponPos, facing, pressDuration);
+        TriggerNonProjectileWeapon(weapon, position, facing, pressDuration);
         break;
     }
 
