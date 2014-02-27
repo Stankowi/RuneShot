@@ -113,14 +113,10 @@ function StartPowerCalcRemote(networkPlayer: NetworkPlayer) {
 }
 
 function EndPowerCalc() {
-    var facing: Vector3 = FacingVector();
-    
     if (Network.connections.Length > 0) {
         networkView.RPC("EndPowerCalcRemote",
                         RPCMode.Server,
                         Network.player,
-                        transform.position,
-                        facing,
                         GetCurrentWeaponListKey());
          return null;
     }
@@ -130,13 +126,13 @@ function EndPowerCalc() {
     }
 
     var end = Time.time;
-    Trigger(transform.position, facing, GetCurrentWeaponListKey(), end - this.powerCalcStart);
+    Trigger(GetCurrentWeaponListKey(), end - this.powerCalcStart);
     powerCalcStart = 0;
     return null;
 }
 
 @RPC
-function EndPowerCalcRemote(networkPlayer: NetworkPlayer, position: Vector3, facing: Vector3, weaponKey: String) {
+function EndPowerCalcRemote(networkPlayer: NetworkPlayer, weaponKey: String) {
     if (! serverCache.Contains(networkPlayer)) {
         return null;
     }
@@ -146,8 +142,6 @@ function EndPowerCalcRemote(networkPlayer: NetworkPlayer, position: Vector3, fac
     networkView.RPC("TriggerRemote",
                 RPCMode.Others,
                 Network.player,
-                position,
-                facing,
                 weaponKey,
                 duration);
     serverCache[networkPlayer] = 0;
@@ -155,24 +149,34 @@ function EndPowerCalcRemote(networkPlayer: NetworkPlayer, position: Vector3, fac
 }
 
 @RPC
-function TriggerRemote(player: NetworkPlayer, position: Vector3, facing: Vector3, weaponKey: String, pressDuration: int) {
+function TriggerRemote(player: NetworkPlayer, weaponKey: String, pressDuration: int) {
 
-    Trigger(position, facing, weaponKey, pressDuration);
+    Trigger(weaponKey, pressDuration);
 }
 
-function Trigger(position: Vector3, facing: Vector3, weaponKey: String, pressDuration: int) {
+function Trigger(weaponKey: String, pressDuration: int) {
 
     var weapon: WeaponDesc = weaponList[weaponKey];
     if (weapon == null) {
         return null;
     }
-
+    
+    //Try and get the weapon model
+    var cam = transform.root.transform.Find("PlayerCamera(Clone)");
+    var weaponPos = transform.position + Vector3(0,1,0);
+    if (cam != null)
+    {
+        var gun = Camera.main.transform.Find("bazooka(Clone)");
+        weaponPos = gun.transform.position + .35*cam.transform.forward;
+    }
+    
+    var facing: Vector3 = GetFacingVector(weaponPos);
     switch (weapon.type) {
         case WeaponType.WeaponProducesProjectile:
-        TriggerProjectileWeapon(weapon, position, facing, pressDuration);
+        TriggerProjectileWeapon(weapon, weaponPos, facing, pressDuration);
         break;
     case WeaponType.WeaponIsProjectile:
-        TriggerNonProjectileWeapon(weapon, position, facing, pressDuration);
+        TriggerNonProjectileWeapon(weapon, weaponPos, facing, pressDuration);
         break;
     }
 
@@ -184,23 +188,24 @@ function TriggerProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, faci
 }
 
 function TriggerNonProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, facing: Vector3, pressDuration: int) {
-    var weaponPos = position + Vector3(0,1,0);
+    
+
     
     var rot = Quaternion.FromToRotation(Camera.main.transform.forward, facing);
-    weapon = Instantiate(weaponDesc.obj, weaponPos, rot);
+  
+    weapon = Instantiate(weaponDesc.obj, position, rot);
     weaponDesc.Component(weapon).Trigger(gameObject.transform.root.gameObject, facing, pressDuration);
 }
 
-function FacingVector() {
+function GetFacingVector(position: Vector3) {
     if (Camera.main != null)
     {
         var dir : Vector3;
         
         var projRay : Ray = Camera.main.ViewportPointToRay(Vector3(0.5, 0.5, 0));
         var hit : RaycastHit;
-        
         if (Physics.Raycast(projRay, hit)) {
-            dir = (hit.point - transform.position).normalized;
+            dir = (hit.point - position).normalized;
         } else {
             dir = projRay.direction;
         }
