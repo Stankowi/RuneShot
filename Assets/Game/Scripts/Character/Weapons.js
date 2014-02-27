@@ -90,8 +90,9 @@ function GetCurrentWeaponObj(): Weapon {
 
 function EquipWeapon(weaponDesc: WeaponDesc) {
     currentWeapon = weaponDesc;
-    
-    GetCurrentWeaponObj().CreateModel();
+    if (gameObject.tag == "Player") {
+        GetCurrentWeaponObj().CreateModel();
+    }
 }
 
 function Start() {
