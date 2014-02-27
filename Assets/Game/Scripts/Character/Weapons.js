@@ -134,8 +134,7 @@ function EndPowerCalc() {
     {
         var weapon: Weapon = GetCurrentWeaponObj();
         if (weapon != null) {
-            var gun = Camera.main.transform.Find("WeaponModel");
-            weaponPos = gun.transform.position + .35*cam.transform.forward;
+            weaponPos = GetCurrentWeaponObj().GetProjectileOrigin();
         }
     }
     

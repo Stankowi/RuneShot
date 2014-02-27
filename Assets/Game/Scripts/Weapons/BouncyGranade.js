@@ -10,6 +10,7 @@ class BouncyGranade extends Weapon {
     private var gunModel: String = "Bazooka/prefabs/bazooka";
     private var gunOffset: Vector3 = Vector3(.23,-.12,.4);
     private var gunRotation: Quaternion = Quaternion.Euler(0.0, 90.0, 0.0);
+    private var projOffset: Vector3 = Vector3(0,0,.4);
      
     function GetModelLoc() {
         return gunModel;
@@ -21,6 +22,10 @@ class BouncyGranade extends Weapon {
     
     function GetGunRotation() {
         return gunRotation;
+    }
+    
+    function GetProjectileOffset() {
+        return projOffset;
     }
 
     function Start() {

@@ -21,6 +21,10 @@ class Laser extends Weapon {
 	function GetGunRotation() {
 		return gunRotation;
 	}
+	
+	function GetProjectileOffset() {
+		return projOffset;
+	}
 
     function Start() {
     }
@@ -31,17 +35,6 @@ class Laser extends Weapon {
             Explode();
         }
     }
-    
-   /* function CreateModel()
-    {
-	    var cam = Camera.main;
-	    gunPrefab = Resources.Load(gunModel, GameObject);
-	   	var gun = GameObject.Instantiate(gunPrefab, cam.transform.position, Quaternion(0.0, 0.0, 0.0, 0.0));
-	   	gun.name = "WeaponModel";
-	    gun.transform.parent = cam.transform;
-	    gun.transform.localPosition = gunOffset;
-	    gun.transform.localRotation = gunRotation;
-    }*/
 
     function OnCollisionEnter(collision: Collision) {
         var other: GameObject = collision.gameObject;

@@ -5,6 +5,7 @@ class Weapon extends MonoBehaviour {
     private var gunModel: String = "";
     private var gunOffset: Vector3 = Vector3(0,0,0);
     private var gunRotation: Quaternion = Quaternion.Euler(0.0, 0.0, 0.0);
+    private var projOffset: Vector3 = Vector3(0,0,0);
     
     function GetOwnerNetworkID(): NetworkViewID {
         var networkID: NetworkViewID;
@@ -27,6 +28,10 @@ class Weapon extends MonoBehaviour {
 	function GetGunRotation() {
 		return gunRotation;
 	}
+	
+	function GetProjectileOffset() {
+		return projOffset;
+	}
     
     function CreateModel() {
     	var currentModel = Camera.main.transform.Find("WeaponModel");
@@ -40,5 +45,11 @@ class Weapon extends MonoBehaviour {
 	    gun.transform.parent = cam.transform;
 	    gun.transform.localPosition = GetGunOffset();
 	    gun.transform.localRotation = GetGunRotation();
+    }
+    
+    function GetProjectileOrigin(): Vector3 {
+    	var gun = Camera.main.transform.Find("WeaponModel");
+        weaponPos = gun.transform.position + GetProjectileOffset().z * Camera.main.transform.forward + GetProjectileOffset().x * Camera.main.transform.right;
+        return weaponPos;
     }
 }
