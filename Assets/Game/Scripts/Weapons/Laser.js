@@ -9,6 +9,10 @@ class Laser extends Weapon {
     private var gunOffset: Vector3 = Vector3(.35,-.3,.31);
     private var gunRotation: Quaternion = Quaternion.Euler(270.0, 10.5, 0.0);
     private var projOffset: Vector3 = Vector3(.15,0,.7);
+    
+    var normalDamage: int = 25;
+    var critDamage: int = 75;
+    var damageRadius: float = 1.25;
      
 	function GetModelLoc() {
 		return gunModel;
@@ -25,6 +29,18 @@ class Laser extends Weapon {
 	function GetProjectileOffset() {
 		return projOffset;
 	}
+	
+	function GetNormalDamage() {
+        return normalDamage;
+    }
+    
+    function GetCritDamage() {
+        return critDamage;
+    }
+    
+    function GetDamageRadius() {
+        return damageRadius;
+    }
 
     function Start() {
     }
@@ -57,14 +73,6 @@ class Laser extends Weapon {
         return obj.GetInstanceID() == this.launchingPlayer.GetInstanceID();
     }
 
-    function GetDamage(): int {
-        return 25;
-    }
-
-     function GetDamageRadius(): int {
-        return 1.25;
-     }
-
      function Explode() { 
         NetworkUtil.Instantiate(Resources.Load(explosionEffect),transform.position,Quaternion.identity,NetworkGroup.Explosion);
          
@@ -72,9 +80,11 @@ class Laser extends Weapon {
 
         var colliders: Collider[] = Physics.OverlapSphere(transform.position, damageRadius);
 
-         var damage: int = GetDamage();
+         var damage: int = 0;
          for(var hit in colliders) {
             if((hit.gameObject.tag == "NPC" || hit.gameObject.tag == "Player") && !IsLauncher(hit.gameObject)) {
+            	damage = GetDamage(IsCriticalHit(hit));
+            	Debug.Log("Damage: " + damage);
                 ComponentUtil.GetComponentInHierarchy(hit.gameObject,"Health").ResolveDamage(damage, gameObject);
                 break;
             }

@@ -11,6 +11,10 @@ class BouncyGranade extends Weapon {
     private var gunOffset: Vector3 = Vector3(.23,-.12,.4);
     private var gunRotation: Quaternion = Quaternion.Euler(0.0, 90.0, 0.0);
     private var projOffset: Vector3 = Vector3(0,0,.4);
+    
+    var normalDamage: int = 25;
+    var critDamage: int = 25;
+    var damageRadius: float = 2.0;
      
     function GetModelLoc() {
         return gunModel;
@@ -26,6 +30,18 @@ class BouncyGranade extends Weapon {
     
     function GetProjectileOffset() {
         return projOffset;
+    }
+    
+    function GetNormalDamage() {
+        return normalDamage;
+    }
+    
+    function GetCritDamage() {
+        return critDamage;
+    }
+    
+    function GetDamageRadius() {
+        return damageRadius;
     }
 
     function Start() {
@@ -66,13 +82,9 @@ class BouncyGranade extends Weapon {
         return obj.GetInstanceID() == this.launchingPlayer.GetInstanceID();
     }
 
-    function GetDamage(): int {
+    function GetDamage(isCritical: boolean): int {
         return Base.health()  * 0.25;
     }
-
-     function GetDamageRadius(): int {
-        return 2;
-     }
 
      function Explode() { 
          NetworkUtil.Instantiate(Resources.Load(explosionEffect),transform.position,Quaternion.identity,NetworkGroup.Explosion);
@@ -81,10 +93,11 @@ class BouncyGranade extends Weapon {
 
         var colliders: Collider[] = Physics.OverlapSphere(transform.position, damageRadius);
 
-         var damage: int = GetDamage();
+         var damage: int = 0;
          for(var hit in colliders) {
             var h = ComponentUtil.GetComponentInHierarchy(hit.gameObject, "Health");
             if (h != null) {
+                damage = GetDamage(IsCriticalHit(hit));
                 h.ResolveDamage(damage, gameObject);
             }
          }
