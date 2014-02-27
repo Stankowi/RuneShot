@@ -56,7 +56,7 @@ function ToggleWeapon() {
     var currentIndex = GetCurrentWeaponInventoryIndex();
     
     var nextIndex = (currentIndex + 1) % weaponInventory.length;
-    currentWeapon = weaponInventory[nextIndex];
+    EquipWeapon(weaponInventory[nextIndex]);
 }
 
 function AddWeaponToInventory(name:String){
@@ -77,7 +77,21 @@ function ResetInventory(){
     weaponInventory.Clear();
     AddWeaponToInventory("bouncyGranade");
     
-    currentWeapon = weaponList["bouncyGranade"];
+    EquipWeapon(weaponList["bouncyGranade"]);
+}
+
+function GetCurrentWeaponObj(): Weapon {
+    if (currentWeapon != null) {
+        return ComponentUtil.GetComponentInHierarchy(currentWeapon.obj,typeof(Weapon)) as Weapon;
+    }
+    
+    return null;
+}
+
+function EquipWeapon(weaponDesc: WeaponDesc) {
+    currentWeapon = weaponDesc;
+    
+    GetCurrentWeaponObj().CreateModel();
 }
 
 function Start() {
@@ -118,8 +132,11 @@ function EndPowerCalc() {
     var weaponPos = transform.position + Vector3(0,1,0);
     if (cam != null)
     {
-        var gun = Camera.main.transform.Find("bazooka(Clone)");
-        weaponPos = gun.transform.position + .35*cam.transform.forward;
+        var weapon: Weapon = GetCurrentWeaponObj();
+        if (weapon != null) {
+            var gun = Camera.main.transform.Find("WeaponModel");
+            weaponPos = gun.transform.position + .35*cam.transform.forward;
+        }
     }
     
     var facing: Vector3 = GetFacingVector(weaponPos);

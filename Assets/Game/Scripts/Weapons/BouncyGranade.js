@@ -6,6 +6,22 @@ class BouncyGranade extends Weapon {
     private var triggered = false;
 
     private var explosionEffect: String = "Particles/Explosion"; 
+    
+    private var gunModel: String = "Bazooka/prefabs/bazooka";
+    private var gunOffset: Vector3 = Vector3(.23,-.12,.4);
+    private var gunRotation: Quaternion = Quaternion.Euler(0.0, 90.0, 0.0);
+     
+    function GetModelLoc() {
+        return gunModel;
+    }
+    
+    function GetGunOffset() {
+        return gunOffset;
+    }
+    
+    function GetGunRotation() {
+        return gunRotation;
+    }
 
     function Start() {
         explodeAt = Time.time + ttl;

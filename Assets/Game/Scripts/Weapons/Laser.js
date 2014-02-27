@@ -3,7 +3,23 @@ class Laser extends Weapon {
     private var explodeAt: int = 0;
     private var exploded: boolean = false;
 
-    private var explosionEffect: String = "Particles/Sparks"; 
+    private var explosionEffect: String = "Particles/Sparks";
+   
+    private var gunModel: String = "Bazooka/prefabs/bazooka";
+    private var gunOffset: Vector3 = Vector3(.23,-.12,.4);
+    private var gunRotation: Quaternion = Quaternion.Euler(0.0, 90.0, 0.0);
+     
+	function GetModelLoc() {
+		return gunModel;
+	}
+	
+	function GetGunOffset() {
+		return gunOffset;
+	}
+	
+	function GetGunRotation() {
+		return gunRotation;
+	}
 
     function Start() {
     }
@@ -14,6 +30,17 @@ class Laser extends Weapon {
             Explode();
         }
     }
+    
+   /* function CreateModel()
+    {
+	    var cam = Camera.main;
+	    gunPrefab = Resources.Load(gunModel, GameObject);
+	   	var gun = GameObject.Instantiate(gunPrefab, cam.transform.position, Quaternion(0.0, 0.0, 0.0, 0.0));
+	   	gun.name = "WeaponModel";
+	    gun.transform.parent = cam.transform;
+	    gun.transform.localPosition = gunOffset;
+	    gun.transform.localRotation = gunRotation;
+    }*/
 
     function OnCollisionEnter(collision: Collision) {
         var other: GameObject = collision.gameObject;
