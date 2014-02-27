@@ -5,9 +5,10 @@ class Laser extends Weapon {
 
     private var explosionEffect: String = "Particles/Sparks";
    
-    private var gunModel: String = "Bazooka/prefabs/bazooka";
-    private var gunOffset: Vector3 = Vector3(.23,-.12,.4);
-    private var gunRotation: Quaternion = Quaternion.Euler(0.0, 90.0, 0.0);
+    private var gunModel: String = "Guns/Aug/Aug";
+    private var gunOffset: Vector3 = Vector3(.35,-.3,.31);
+    private var gunRotation: Quaternion = Quaternion.Euler(270.0, 10.5, 0.0);
+    private var projOffset: Vector3 = Vector3(.15,0,.7);
      
 	function GetModelLoc() {
 		return gunModel;
