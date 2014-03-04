@@ -82,7 +82,14 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
 
                 var networkChar = ComponentUtil.GetComponentInHierarchy(attacker,typeof(CharacterNetwork)) as CharacterNetwork;
                 if (networkChar != null){
-                    scoreboard.AddKill(networkChar.networkPlayer);
+                    if(networkChar.networkPlayer == networkPlayer)
+                    {
+                        scoreboard.RemoveKill(networkChar.networkPlayer);
+                    }
+                    else
+                    {
+                        scoreboard.AddKill(networkChar.networkPlayer);
+                    }
                 }
             }
         }
