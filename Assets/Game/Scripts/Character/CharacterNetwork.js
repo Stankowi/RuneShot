@@ -40,8 +40,15 @@ function AddKeyClient( player: NetworkPlayer, color: int ) {
     networkPlayer = player;
     
     if(player == Network.player) {
-        var networkChar = Component.FindObjectOfType(CharacterNetwork);
-        networkChar.keyInventory.addKey(color);
+        for(var c:CharacterNetwork in Component.FindObjectsOfType(CharacterNetwork))
+        {
+            if(c.networkPlayer == player)
+            {
+                //var networkChar = Component.FindObjectOfType(CharacterNetwork);
+                //networkChar.keyInventory.addKey(color);
+                c.keyInventory.addKey(color);
+            }
+        }
     }
 }
 
