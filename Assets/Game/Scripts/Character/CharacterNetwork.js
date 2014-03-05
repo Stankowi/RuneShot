@@ -60,7 +60,8 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
     
     var weapons = ComponentUtil.GetComponentInHierarchy(localPlayer,typeof(Weapons)) as Weapons;
     if ( weapons ) {
-        weapons.ResetInventory();
+        weapons.HideWeapon();
+    //    weapons.ResetInventory();
     }
 }
 
@@ -105,6 +106,11 @@ function Respawn() {
     }
     else {
         DisableDeathCam();
+    }
+    
+    var weapons = ComponentUtil.GetComponentInHierarchy(localPlayer,typeof(Weapons)) as Weapons;
+    if ( weapons ) {
+        weapons.ResetInventory();
     }
 }
 

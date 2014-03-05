@@ -5,7 +5,7 @@ class Laser extends Weapon {
 
     private var explosionEffect: String = "Particles/Sparks";
    
-    private var gunModel: String = "Guns/Aug/Aug";
+    private var gunModel: String = "Guns/Aug/Aug2";
     private var gunOffset: Vector3 = Vector3(.35,-.3,.31);
     private var gunRotation: Quaternion = Quaternion.Euler(270.0, 10.5, 0.0);
     private var projOffset: Vector3 = Vector3(.15,0,.7);

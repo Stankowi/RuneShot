@@ -75,9 +75,9 @@ function AddWeaponToInventory(name:String){
 function ResetInventory(){
     //add weapons to inventory
     weaponInventory.Clear();
-    AddWeaponToInventory("bouncyGranade");
+    AddWeaponToInventory("laser");
     
-    EquipWeapon(weaponList["bouncyGranade"]);
+    EquipWeapon(weaponList["laser"]);
 }
 
 function GetCurrentWeaponObj(): Weapon {
@@ -88,6 +88,14 @@ function GetCurrentWeaponObj(): Weapon {
     return null;
 }
 
+function HideWeapon()
+{
+        var currentModel = Camera.main.transform.Find("WeaponModel");
+        if (currentModel != null) {
+            Destroy(currentModel.gameObject);
+        }
+}
+
 function EquipWeapon(weaponDesc: WeaponDesc) {
     currentWeapon = weaponDesc;
     if (gameObject.tag == "Player") {
@@ -96,14 +104,16 @@ function EquipWeapon(weaponDesc: WeaponDesc) {
 }
 
 function Start() {
+    laser = Resources.Load("Guns/Laser", GameObject);
     bouncyGranade = Resources.Load("Guns/BouncyGranade", GameObject);
     rocket = Resources.Load("Guns/Rocket", GameObject);
-    laser = Resources.Load("Guns/Laser", GameObject);
+    
 
     // Setup the weapons list
+    weaponList["laser"] = new WeaponDesc(laser, "Laser", WeaponType.WeaponIsProjectile);
     weaponList["bouncyGranade"] = new WeaponDesc(bouncyGranade, "BouncyGranade", WeaponType.WeaponIsProjectile);
     weaponList["rocket"] = new WeaponDesc(rocket, "Rocket", WeaponType.WeaponIsProjectile);
-    weaponList["laser"] = new WeaponDesc(laser, "Laser", WeaponType.WeaponIsProjectile);
+    
     
     //add weapons to inventory
     ResetInventory();    
