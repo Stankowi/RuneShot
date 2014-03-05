@@ -28,6 +28,7 @@ function Update () {
 		directionVector = directionVector * directionLength;
 	}
 	
+    
 	// Apply the direction to the CharacterMotor
 	motor.inputMoveDirection = transform.rotation * directionVector;
 	motor.inputJump = Input.GetButton("Jump");
@@ -35,11 +36,11 @@ function Update () {
     var wpns = ComponentUtil.GetComponentInHierarchy(gameObject,Weapons);
     if (wpns != null) {
     
-        if (Input.GetKeyDown(KeyCode.B) || Input.GetMouseButtonDown(0)) {
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetMouseButtonDown(0)) {
             wpns.StartPowerCalc();
         }
 
-        if (Input.GetKeyUp(KeyCode.B) || Input.GetMouseButtonUp(0)) {
+        if (Input.GetKeyUp(KeyCode.LeftControl) || Input.GetMouseButtonUp(0)) {
             wpns.EndPowerCalc();
         }
         

@@ -17,6 +17,14 @@ public function AddKill(player : NetworkPlayer) {
         SendScoreUpdate(playerName);
     }
 }
+
+public function RemoveKill(player : NetworkPlayer) {
+    var playerName : String = GetPlayerName(player);
+    if(players.ContainsKey(playerName)) {
+        players[playerName].kills--;
+        SendScoreUpdate(playerName);
+    }
+}
 function OnGUI() {
     var nameWidth = 120;
     var statsWidth = 60;
