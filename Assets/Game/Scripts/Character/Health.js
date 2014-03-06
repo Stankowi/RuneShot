@@ -21,6 +21,18 @@ function Awake() {
 }
 
 function ResolveDamage(damage: int, attacker : GameObject) {
+    
+    //Don't resolve any damage if death cam is active
+    var deathCam = transform.root.FindChild(PlayerDeathCamera.PrefabName());
+    if(deathCam != null)
+    {
+        if(deathCam.gameObject.activeSelf)
+        {
+            return;
+        }
+    }
+          
+    
     health -= damage;
     Debug.Log("Health is now " + health);
 
