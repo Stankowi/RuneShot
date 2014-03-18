@@ -16530,6 +16530,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1710568734}
   - 114: {fileID: 1710568735}
+  - 148: {fileID: 1710568736}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -16564,6 +16565,18 @@ MonoBehaviour:
   maxNPCs: 8
   minSpawnTime: 4
   maxSpawnTime: 8
+--- !u!148 &1710568736
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1710568733}
+  m_Enabled: 1
+  m_StateSynchronization: 0
+  m_Observed: {fileID: 0}
+  m_ViewID:
+    m_ID: 1
+    m_Type: 1
 --- !u!1001 &1715604272
 Prefab:
   m_ObjectHideFlags: 0
