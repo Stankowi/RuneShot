@@ -26,6 +26,13 @@ public function RemoveKill(player : NetworkPlayer) {
     }
 }
 
+public function GetDisplayName(player : NetworkPlayer){
+    var playerName : String = GetPlayerName(player);
+    if(players.ContainsKey(playerName)) {
+        return players[playerName].displayName;
+    }
+}
+
 function OnGUI() {
     var nameWidth = 120;
     var statsWidth = 60;

@@ -1,9 +1,11 @@
-﻿#pragma strict
+#pragma strict
 
 public var networkPlayer: NetworkPlayer;
 public var localPlayer: GameObject;
 public var keyInventory : KeyInventory;
 private var networkManager: NetworkManager;
+private var showKiller = false;
+private var lastKilledBy = "unknown";
 
 function Start() {
     networkManager = GameObject.FindObjectOfType(NetworkManager);
@@ -11,6 +13,21 @@ function Start() {
 
 function IsSinglePlayer(): boolean {
     return networkManager.IsSinglePlayer();
+}
+
+function OnGUI () {
+    if(showKiller){
+        var style = GUIStyle();
+        style.fontSize = 50;
+        style.normal.textColor = Color.red;
+        style.alignment = TextAnchor.MiddleCenter;
+        //GUI.contentColor = Color.red;    
+        
+        GUI.Box(Rect(Screen.width/2,Screen.height/2,0,30),"Killed by: " + lastKilledBy, style);
+        GUI.enabled = true;
+    } else {
+        GUI.enabled = false;
+    }
 }
 
 @RPC
@@ -52,6 +69,11 @@ function AddKeyClient( player: NetworkPlayer, color: int ) {
     }
 }
 
+@RPC
+public function SetLastKilledBy(killer: String){
+    lastKilledBy = killer;
+}
+
 public function Die(position : Vector3, rotation : Quaternion, damage: int, attackerPos: Vector3) {
     SpawnRagdoll(position, rotation, damage, attackerPos);
     EnableDeathCam();
@@ -63,6 +85,7 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
         weapons.HideWeapon();
     //    weapons.ResetInventory();
     }
+    showKiller = true;
 }
 
 @RPC
@@ -73,6 +96,7 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
     {
         attacker = attackerNV.gameObject;
     }
+
     // Only the server should be sending out the scoreboard updates.
     if(Network.isServer) {
         var scoreboardGO : GameObject = GameObject.Find("Scoreboard(Clone)");
@@ -91,6 +115,12 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
                     {
                         scoreboard.AddKill(networkChar.networkPlayer);
                     }
+
+                    //Tell the player who killed him:
+                    networkView.RPC("SetLastKilledBy", 
+                            networkPlayer,
+                            scoreboard.GetDisplayName(networkChar.networkPlayer)
+                            );
                 }
             }
         }
@@ -112,6 +142,9 @@ function Respawn() {
     if ( weapons ) {
         weapons.ResetInventory();
     }
+
+    showKiller = false;
+    lastKilledBy = "";
 }
 
 function SpawnRagdoll(position : Vector3, rotation : Quaternion, damage: int, attackerPosition : Vector3) {
