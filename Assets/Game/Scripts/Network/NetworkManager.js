@@ -1,10 +1,9 @@
-﻿
+
 // needs to be a globally (globe -> earth) unique name for this game
 var gameName: String = "2013 RuneShot Game Jam";
 var maxNPCs: int = 8;
 var minSpawnTime: float = 4.0f;
 var maxSpawnTime: float = 8.0f;
-
 
 private var hostData: HostData[];
 private var refreshing: boolean;
@@ -40,7 +39,6 @@ function IsSinglePlayer(): boolean {
 //
 
 function Start () {
-    
     playerSpawnPoints = GameObject.FindObjectsOfType(CharacterSpawnPoint);
     npcSpawnPoints = GameObject.FindObjectsOfType(NPCSpawnPoint);
     playerName = PlayerPrefs.GetString("Player Name", System.Environment.UserName);
@@ -194,6 +192,12 @@ function OnPlayerConnected( player: NetworkPlayer ) {
     
     Debug.Log("Player connected from " + player.ipAddress + ":" + player.port);
     SpawnServerCharacter(player);
+
+    //Get DisplayName for Player
+    networkView.RPC("SendOutDisplayName",
+                player
+                );   
+    
 }
 
 function SpawnServerCharacter(player: NetworkPlayer) {
@@ -208,14 +212,13 @@ function SpawnServerCharacter(player: NetworkPlayer) {
                                                 NetworkGroup.CharacterNetwork);
     chrNetwork.transform.parent = chrServer.transform;
     
-    if(Network.connections.Length > 0) {
+    if(Network.connections.Length > 0) {    
         chrNetwork.networkView.RPC("SetPlayerData", RPCMode.AllBuffered, player);
     }
     else {    
         var cn: CharacterNetwork = chrNetwork.GetComponent(CharacterNetwork) as CharacterNetwork;
         cn.SetPlayerData(player);
     }
-
 }
 
 function OnPlayerDisconnected( player: NetworkPlayer ) {
@@ -259,7 +262,19 @@ function connectToServer( hostname: String, port: int ) {
         PlayerPrefs.SetString("Player Name", playerName);
     }
 
-    Network.Connect( hostname, port );
+    Network.Connect( hostname, port );  
+}
+
+@RPC
+function SendOutDisplayName() { //scoreboard : GameObject){
+    var scoreboard : GameObject = GameObject.Find("Scoreboard(Clone)");
+    if(scoreboard != null){
+        var score : Scoreboard = scoreboard.GetComponent(Scoreboard);
+        if(score != null){       
+            var networkPlayerName = Network.player.externalIP + ":" + Network.player.externalPort;
+            score.SendPlayerInformationToOthers(networkPlayerName, playerName);
+        }
+    }
 }
 
 function OnConnectedToServer() {

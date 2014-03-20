@@ -1,4 +1,4 @@
-﻿#pragma strict
+#pragma strict
 
 var players = new Dictionary.<String,PlayerScore>();
 
@@ -25,6 +25,14 @@ public function RemoveKill(player : NetworkPlayer) {
         SendScoreUpdate(playerName);
     }
 }
+
+public function GetDisplayName(player : NetworkPlayer){
+    var playerName : String = GetPlayerName(player);
+    if(players.ContainsKey(playerName)) {
+        return players[playerName].displayName;
+    }
+}
+
 function OnGUI() {
     var nameWidth = 120;
     var statsWidth = 60;
@@ -44,7 +52,7 @@ function OnGUI() {
             GUI.color = new Color(0.8f,0.8f,0.8f,1.0f);
         }
         GUILayout.BeginHorizontal(GUI.skin.box);
-        GUILayout.Label(e.Current.Key,GUILayout.Width(nameWidth));
+        GUILayout.Label(e.Current.Value.displayName,GUILayout.Width(nameWidth));
         GUILayout.Label(e.Current.Value.kills.ToString(),GUILayout.Width(statsWidth));
         GUILayout.Label(e.Current.Value.deaths.ToString(),GUILayout.Width(statsWidth));
         GUILayout.EndHorizontal();
@@ -60,12 +68,7 @@ function GetPlayerName(player : NetworkPlayer) {
 
 function OnPlayerConnected(player: NetworkPlayer) {
     // When a player connects, send all players that new player's information
-    networkView.RPC("UpdateScore",
-                    RPCMode.AllBuffered,
-                    GetPlayerName(player),
-                    0,
-                    0,
-                    true);
+    SendPlayerInformationToOthers(GetPlayerName(player), GetPlayerName(player));
 
     // Send the newly connected player the current scoreboard data
     var e = players.GetEnumerator();
@@ -73,12 +76,23 @@ function OnPlayerConnected(player: NetworkPlayer) {
         networkView.RPC("UpdateScore",
                         player,
                         e.Current.Key,
+                        e.Current.Value.displayName,
                         e.Current.Value.kills,
                         e.Current.Value.deaths,
                         e.Current.Value.connected
                     );
     }
     
+}
+
+function SendPlayerInformationToOthers(player: String, displayName: String){
+    networkView.RPC("UpdateScore",
+                    RPCMode.AllBuffered,
+                    player,
+                    displayName,
+                    0,
+                    0,
+                    true);
 }
     
 function OnPlayerDisconnected(player: NetworkPlayer) {
@@ -95,6 +109,7 @@ function SendScoreUpdate(playerName : String) {
         networkView.RPC("UpdateScore",
                         RPCMode.AllBuffered,
                         playerName,
+                        players[playerName].displayName,
                         players[playerName].kills,
                         players[playerName].deaths,
                         players[playerName].connected
@@ -103,10 +118,11 @@ function SendScoreUpdate(playerName : String) {
 }
 
 @RPC
-function UpdateScore(player : String, kills : int, deaths : int, connected : boolean) {
+function UpdateScore(player : String, displayName : String, kills : int, deaths : int, connected : boolean) {
     if(!players.ContainsKey(player)) {
         players.Add(player,new PlayerScore());
     }
+    players[player].displayName = displayName;
     players[player].kills = kills;
     players[player].deaths = deaths;
     players[player].connected = connected;
