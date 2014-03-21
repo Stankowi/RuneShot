@@ -3,6 +3,7 @@ private var networkManager: NetworkManager;
 private var character: Character;
 private var player: PlayerCharacter;
 private var mainGUI: MainGUI;
+private var invincible;
 
 
 function Awake() {
@@ -21,6 +22,9 @@ function Awake() {
 }
 
 function ResolveDamage(damage: int, attacker : GameObject) {
+    if(invincible){
+        return;
+    }
     
     //Don't resolve any damage if death cam is active
     var deathCam = transform.root.FindChild(PlayerDeathCamera.PrefabName());
@@ -91,3 +95,13 @@ function GetHealth(): int {
 function GetMaxHealth(): int {
     return Base.health();
 }
+
+function Invincible(){
+    invincible = true;
+    Invoke("RemoveInvincible", 30);
+}
+
+function RemoveInvincible(){
+    invincible = false;
+}
+
