@@ -24,13 +24,9 @@ function OnTriggerEnter (collision : Collider) {
             Invoke("SpawnNewInvincibleCapsule",60);
         }
         
-        //call player
+        //call player to set health
         var health = ComponentUtil.GetComponentInHierarchy(collision.gameObject,typeof(Health)) as Health;
         health.Invincible();
-        var health = ComponentUtil.GetComponentInHierarchy(collision.gameObject,typeof(Dude)) as Dude;
-        Debug.Log("test");
-        //collision.material.color = Color.red;
-        
         
     }
 }
