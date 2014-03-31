@@ -1,7 +1,7 @@
 class Weapon extends MonoBehaviour {
     public var launchingPlayer: GameObject = null;
     
-    private var gunPrefab: GameObject; 
+    private var gun: GameObject; 
     private var gunModel: String = "";
     private var gunOffset: Vector3 = Vector3(0,0,0);
     private var gunRotation: Quaternion = Quaternion.Euler(0.0, 0.0, 0.0);
@@ -10,6 +10,8 @@ class Weapon extends MonoBehaviour {
     private var normalDamage: int = 0;
     private var critDamage: int = 0;
     private var damageRadius: float = 1.0;
+    private var bobbingAnimation: Animation;
+    private var weaponBobAnimationClip: AnimationClip;
     
     function GetOwnerNetworkID(): NetworkViewID {
         var networkID: NetworkViewID;
@@ -55,12 +57,17 @@ class Weapon extends MonoBehaviour {
     		Destroy(currentModel.gameObject);
     	}
    		var cam = Camera.main;
-	    gunPrefab = Resources.Load(GetModelLoc(), GameObject);
-	   	var gun = GameObject.Instantiate(gunPrefab, cam.transform.position, Quaternion(0.0, 0.0, 0.0, 0.0));
-	   	gun.name = "WeaponModel";
-	    gun.transform.parent = cam.transform;
-	    gun.transform.localPosition = GetGunOffset();
-	    gun.transform.localRotation = GetGunRotation();
+	    var gunPrefab = Resources.Load(GetModelLoc(), GameObject);
+        weaponBobAnimationClip = Resources.Load("Guns/WeaponBob",AnimationClip);
+	   	
+        gun = GameObject.Instantiate(gunPrefab, cam.transform.position, Quaternion(0.0, 0.0, 0.0, 0.0));
+        gun.AddComponent("Animation");
+        gun.name = "WeaponModel";
+        gun.transform.parent = cam.transform;
+        gun.transform.localPosition = GetGunOffset();
+        gun.transform.localRotation = GetGunRotation();
+        gun.animation.AddClip(weaponBobAnimationClip, "WeaponBob");
+        return gun;
     }
     
     function GetProjectileOrigin(): Vector3 {
@@ -89,5 +96,4 @@ class Weapon extends MonoBehaviour {
     	
     	return GetNormalDamage();
     }
- 
 }
