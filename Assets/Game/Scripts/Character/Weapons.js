@@ -4,6 +4,7 @@ private var currentWeapon: WeaponDesc = null;
 private var weaponList: Hashtable = new Hashtable();
 private var weaponInventory: Array = new Array();
 private static var serverCache: Hashtable = new Hashtable();
+private var currentWeaponModel: GameObject;
 
 enum WeaponType {
     WeaponProducesProjectile,
@@ -99,7 +100,7 @@ function HideWeapon()
 function EquipWeapon(weaponDesc: WeaponDesc) {
     currentWeapon = weaponDesc;
     if (gameObject.tag == "Player") {
-        GetCurrentWeaponObj().CreateModel();
+       currentWeaponModel =  GetCurrentWeaponObj().CreateModel();
     }
 }
 
@@ -108,7 +109,6 @@ function Start() {
     bouncyGranade = Resources.Load("Guns/BouncyGranade", GameObject);
     rocket = Resources.Load("Guns/Rocket", GameObject);
     
-
     // Setup the weapons list
     weaponList["laser"] = new WeaponDesc(laser, "Laser", WeaponType.WeaponIsProjectile);
     weaponList["bouncyGranade"] = new WeaponDesc(bouncyGranade, "BouncyGranade", WeaponType.WeaponIsProjectile);
@@ -120,6 +120,21 @@ function Start() {
 } 
 
 function Update () {
+    if(currentWeaponModel)
+    {
+        var directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+        if(directionVector != Vector3.zero) {
+            if(!currentWeaponModel.animation.IsPlaying("WeaponBob")) {
+                currentWeaponModel.animation.Play("WeaponBob");
+            }
+        }
+        else {
+           if(currentWeaponModel.animation.IsPlaying("WeaponBob")) {
+                currentWeaponModel.animation.Stop("WeaponBob");
+           }
+        }
+    }
 }
 
 function StartPowerCalc() {
