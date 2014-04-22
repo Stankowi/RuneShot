@@ -1,3 +1,11 @@
 Library/
+Obj/
 Temp/
-RuneShot.userprefs
+UnityGenerated/
+*.csproj
+*.pidb
+*.sln
+*.suo
+*.unityproj
+*.user
+*.userprefs
