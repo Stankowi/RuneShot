@@ -5,6 +5,15 @@ function Awake () {
 	motor = GetComponent(CharacterMotor);
 }
 
+function Start() {
+	// disable the capsule collider on the CharacterGraphics gameObject so that you can't kill yourself
+	// (hacked yes but because of the way things are set up, this is a quick and easy way to get things ready for Rabbit)
+	var characterGraphicsCollider: CapsuleCollider = gameObject.GetComponentInChildren(CapsuleCollider);
+	characterGraphicsCollider.enabled = false;
+	var characterGraphicsRabbitPlayer: RabbitPlayer = gameObject.GetComponentInChildren(RabbitPlayer);
+	characterGraphicsRabbitPlayer.enabled = false;
+}
+
 // Update is called once per frame
 function Update () {
 

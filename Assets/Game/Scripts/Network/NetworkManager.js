@@ -49,7 +49,9 @@ function Update () {
     // check to see if we're waiting for the servers list
     updateCheckRefreshing();
     if (isServerInitialized) {
-        updateGameLoop();
+    	if (isSinglePlayer) {
+        	updateGameLoop();
+        }
     }
 }
 
