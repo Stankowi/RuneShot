@@ -80,11 +80,19 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
     keyInventory.clearKeys();
     Invoke("Respawn",5);
     
-    var weapons = ComponentUtil.GetComponentInHierarchy(localPlayer,typeof(Weapons)) as Weapons;
-    if ( weapons ) {
-        weapons.HideWeapon();
-    //    weapons.ResetInventory();
+    var charCollider = transform.root.GetComponent(Collider);
+    if(charCollider) {
+    	charCollider.enabled = false;
     }
+    
+    if(localPlayer) {
+	    var weapons = ComponentUtil.GetComponentInHierarchy(localPlayer,typeof(Weapons)) as Weapons;
+	    if ( weapons ) {
+	        weapons.HideWeapon();
+	    //    weapons.ResetInventory();
+	    }
+    }
+    
     showKiller = true;
 }
 
@@ -99,6 +107,9 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
 
     // Only the server should be sending out the scoreboard updates.
     if(Network.isServer) {
+    	// notify the game mode that a player has died
+    	HandlerManager.GameHandler.CurrentGameMode.OnPlayerDeath(networkPlayer);
+    
         var scoreboardGO : GameObject = GameObject.Find("Scoreboard(Clone)");
         if(scoreboardGO != null) {
             var scoreboard : Scoreboard = scoreboardGO.GetComponent(Scoreboard);
@@ -116,6 +127,8 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
                         scoreboard.AddKill(networkChar.networkPlayer);
                     }
 
+					
+
                     //Tell the player who killed him:
                     networkView.RPC("SetLastKilledBy", 
                             networkPlayer,
@@ -130,6 +143,11 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
 }
 
 function Respawn() {
+	var charCollider = transform.root.GetComponent(Collider);
+    if(charCollider) {
+    	charCollider.enabled = true;
+    }
+
     if(Network.connections.Length > 0 && gameObject.networkView != null) {
         gameObject.networkView.RPC("DisableDeathCam",
                                     RPCMode.AllBuffered);
@@ -138,9 +156,11 @@ function Respawn() {
         DisableDeathCam();
     }
     
-    var weapons = ComponentUtil.GetComponentInHierarchy(localPlayer,typeof(Weapons)) as Weapons;
-    if ( weapons ) {
-        weapons.ResetInventory();
+    if(localPlayer) {
+	    var weapons = ComponentUtil.GetComponentInHierarchy(localPlayer,typeof(Weapons)) as Weapons;
+	    if ( weapons ) {
+	        weapons.ResetInventory();
+	    }
     }
 
     showKiller = false;
@@ -152,17 +172,31 @@ function SpawnRagdoll(position : Vector3, rotation : Quaternion, damage: int, at
 }
 
 function EnableDeathCam() {
+	// disable main collider so character doesn't get hit after dying
+    /*var charCollider = transform.root.GetComponent(Collider);
+    if(charCollider) {
+    	charCollider.enabled = false;
+    }*/
+    
     // Network players (and the local player) need to disable the character graphic while the character is dead.
     var renderers = transform.root.GetComponentsInChildren(Renderer);
     for(var renderIndex = 0; renderIndex < renderers.Length; renderIndex++) {
         var renderer : Renderer = renderers[renderIndex] as Renderer;
-        renderer.enabled = false;
+        // hacked in to only disable character rendered meshes and not to make the RabbitFlag invisible
+        if(renderer.name != "RabbitFlag_Orb" && renderer.name != "RabbitFlag_Particles") {
+			renderer.enabled = false;
+        }
     }
-
 }
 
 @RPC
 public function DisableDeathCam() {
+	// enable main collider so character can get hit
+    /*var charCollider = transform.root.GetComponent(Collider);
+    if(charCollider) {
+    	charCollider.enabled = true;
+    }*/
+    
     // The player who died needs to have his controls re-enabled.
     var deathCamTrans : Transform = transform.root.FindChild("DeathCamera(Clone)");
     if(deathCamTrans != null && deathCamTrans.gameObject.activeSelf) {

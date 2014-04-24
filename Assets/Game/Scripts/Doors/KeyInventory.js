@@ -13,8 +13,10 @@ function addKey(color : DoorColor) {
 }
 
 function clearKeys() {
-     for( var i = 0; i < keys.Length; ++i ){
-        keys[i] = false;
+	if(keys) {
+	    for( var i = 0; i < keys.Length; ++i ){
+	        keys[i] = false;
+	    }
     }
 }
 
