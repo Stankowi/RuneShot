@@ -8,7 +8,7 @@ public function get RabbitFlagTransform() : Transform {
 
 function Awake() {
 	// get reference to the rabbit flag holder transform and set it's updated position based on where the player is currently located
-	var rabbitHolder: GameObject = Resources.Load("Game Modes/Rabbit/RabbitFlagHolder",GameObject);
+	var rabbitHolder: GameObject = Resources.Load("Game Modes/Rabbit/RabbitFlagHolder", GameObject);
 	var playerRabbitHolderPos: Vector3 = this.transform.position + rabbitHolder.transform.position;
 	
 	// instantiate the rabbit holder transform

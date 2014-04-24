@@ -19,19 +19,42 @@ class RabbitMode extends GameMode {
 		Debug.Log(netViewID + " currently has the flag");
 		rabbitHolderNetPlayer = netPlayer;
 		rabbitHolderNetViewID = netViewID;
+		
+		// send the updated flag state to all of the players
+		var scoreboardGO : GameObject = GameObject.Find("Scoreboard(Clone)");
+        if(scoreboardGO != null) {
+            var scoreboard : Scoreboard = scoreboardGO.GetComponent(Scoreboard);
+            if(scoreboard != null) {
+            	scoreboard.ChangeFlagState(rabbitHolderNetPlayer, true);
+            }
+        }
 	}
 
 	function OnPlayerDeath(player: NetworkPlayer) {
 		super(player);
 		if(player == rabbitHolderNetPlayer) {
-			flag.networkView.RPC("Drop", RPCMode.AllBuffered);
+			playerDroppedFlag();
 		}
 	}
 
 	function OnPlayerDisconnected(player: NetworkPlayer) {
 		Debug.Log("Player " + player + " disconnected");
 		if(player == rabbitHolderNetPlayer) {
-			flag.networkView.RPC("Drop", RPCMode.AllBuffered);
+			playerDroppedFlag();
 		}
+	}
+	
+	function playerDroppedFlag() {
+		// physically "drop" the flag
+		flag.networkView.RPC("Drop", RPCMode.AllBuffered);
+		
+		// send the updated flag state to all of the players
+		var scoreboardGO : GameObject = GameObject.Find("Scoreboard(Clone)");
+        if(scoreboardGO != null) {
+            var scoreboard : Scoreboard = scoreboardGO.GetComponent(Scoreboard);
+            if(scoreboard != null) {
+            	scoreboard.ChangeFlagState(rabbitHolderNetPlayer, false);
+            }
+        }
 	}
 }

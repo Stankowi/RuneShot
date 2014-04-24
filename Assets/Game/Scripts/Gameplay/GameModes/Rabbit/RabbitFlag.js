@@ -1,5 +1,7 @@
 ﻿#pragma strict
 
+public var rabbitFlagImage: Texture2D;
+
 private var layerMask: int;
 private var pickedUp: boolean;
 private var canPickUp: boolean;
@@ -104,6 +106,7 @@ function Drop() {
 
 function OnGUI() {
 	if(displayFlagMsg) {
-		GUI.Label(Rect(Screen.width / 2 - 100.0f, 25.0f, 200.0f, 25.0f), "You have the flag.. RUN!");
+		//GUI.Label(Rect(Screen.width / 2 - 100.0f, 25.0f, 200.0f, 25.0f), "You have the flag.. RUN!");
+		GUI.DrawTexture(Rect(Screen.width / 2 - 25.0f, 25.0f, 50.0f, 50.0f), rabbitFlagImage);
 	}
 }

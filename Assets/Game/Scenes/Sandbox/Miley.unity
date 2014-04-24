@@ -888,6 +888,10 @@ Prefab:
       propertyPath: m_Observed
       value: 
       objectReference: {fileID: 1510397004}
+    - target: {fileID: 11400000, guid: b91d7adbf3a49be47b36db2f7e89d0db, type: 2}
+      propertyPath: rabbitFlagImage
+      value: 
+      objectReference: {fileID: 2800000, guid: 325e7cfb56122da408dbc8598f294047, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b91d7adbf3a49be47b36db2f7e89d0db, type: 2}
   m_RootGameObject: {fileID: 1510397003}
@@ -1423,6 +1427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36ce2e2152b76be44809b3127bce9642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rabbitFlagImage: {fileID: 2800000, guid: 325e7cfb56122da408dbc8598f294047, type: 3}
 --- !u!4 &1510397005
 Transform:
   m_ObjectHideFlags: 0

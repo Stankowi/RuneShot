@@ -80,10 +80,8 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
     keyInventory.clearKeys();
     Invoke("Respawn",5);
     
-    var charCollider = transform.root.GetComponent(Collider);
-    if(charCollider) {
-    	charCollider.enabled = false;
-    }
+    // disable the character's collider to ignore additional collisions post death
+    enableCharacterCollider(false);
     
     if(localPlayer) {
 	    var weapons = ComponentUtil.GetComponentInHierarchy(localPlayer,typeof(Weapons)) as Weapons;
@@ -143,10 +141,8 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
 }
 
 function Respawn() {
-	var charCollider = transform.root.GetComponent(Collider);
-    if(charCollider) {
-    	charCollider.enabled = true;
-    }
+	// enable the character's collider so it can begin colliding again
+	enableCharacterCollider(true);
 
     if(Network.connections.Length > 0 && gameObject.networkView != null) {
         gameObject.networkView.RPC("DisableDeathCam",
@@ -165,6 +161,14 @@ function Respawn() {
 
     showKiller = false;
     lastKilledBy = "";
+}
+
+// enables/disables the character's collider so it can receive/ignore collision from other things, such as projectiles
+function enableCharacterCollider(enabled: boolean) {
+	var charCollider = transform.root.GetComponent(Collider);
+    if(charCollider) {
+    	charCollider.enabled = enabled;
+    }
 }
 
 function SpawnRagdoll(position : Vector3, rotation : Quaternion, damage: int, attackerPosition : Vector3) {
