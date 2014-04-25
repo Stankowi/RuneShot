@@ -35,7 +35,6 @@ function ResolveDamage(damage: int, attacker : GameObject) {
             return;
         }
     }
-          
     
     health -= damage;
     Debug.Log("Health is now " + health);
@@ -52,7 +51,7 @@ function Die(damage: int, attacker : GameObject) {
         if(Network.connections.Length > 0 && gameObject.networkView != null) {
             var projectile: Weapon = ComponentUtil.GetComponentInHierarchy(attacker,typeof(Weapon)) as Weapon;
             network.gameObject.networkView.RPC("DieRemote", 
-                                        RPCMode.AllBuffered,
+                                        RPCMode.Others,
                                         Network.player, 
                                         
                                         gameObject.transform.root.position,

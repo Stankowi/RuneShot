@@ -15,7 +15,7 @@ function Awake() {
 	rabbitHolder = GameObject.Instantiate(rabbitHolder, playerRabbitHolderPos, Quaternion.identity);
 	// change the name to be able to find it at Start and parent the player's transform
 	rabbitHolder.name = "RabbitFlagHolder";
-	rabbitHolder.transform.parent = this.transform;
+	rabbitHolder.transform.parent = this.transform.transform;
 	
 	// store the rabbit flag transform for quick reference
 	rabbitFlagTransform = this.transform.FindChild("RabbitFlagHolder").transform;
@@ -24,4 +24,9 @@ function Awake() {
 	} else {
 		Debug.Log("I found the flag transform on " + this.name);
 	}
+}
+
+function OnDisable() {
+	Debug.Log("WHAT");
+	this.enabled = true;
 }

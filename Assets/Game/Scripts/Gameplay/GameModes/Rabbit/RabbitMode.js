@@ -1,22 +1,25 @@
 ﻿#pragma strict
 
 class RabbitMode extends GameMode {
-	private var flag: RabbitFlag;
+	public var flag: RabbitFlag;
+	
+	private var rabbitHolderObject: GameObject;
 	private var rabbitHolderNetPlayer: NetworkPlayer;
 	private var rabbitHolderNetViewID: NetworkViewID;
 	
 	// gets the RabbitFlag component
-	public function get Flag() : RabbitFlag {
+	/*public function get Flag() : RabbitFlag {
 		return flag;
 	}
 	
 	// sets the RabbitFlag component
 	public function set Flag(value : RabbitFlag) {
 		flag = value;
-	}
+	}*/
 
-	function playerPickedUpFlag(netPlayer: NetworkPlayer, netViewID: NetworkViewID) {
+	function playerPickedUpFlag(playerObj: GameObject, netPlayer: NetworkPlayer, netViewID: NetworkViewID) {
 		Debug.Log(netViewID + " currently has the flag");
+		rabbitHolderObject = playerObj;
 		rabbitHolderNetPlayer = netPlayer;
 		rabbitHolderNetViewID = netViewID;
 		
@@ -33,7 +36,10 @@ class RabbitMode extends GameMode {
 	function OnPlayerDeath(player: NetworkPlayer) {
 		super(player);
 		if(player == rabbitHolderNetPlayer) {
+			Debug.Log("Player who died had the flag!");
 			playerDroppedFlag();
+		} else {
+			Debug.Log("Player who died DID NOT have the flag!");
 		}
 	}
 

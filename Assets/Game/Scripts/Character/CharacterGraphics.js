@@ -1,5 +1,8 @@
 ﻿#pragma strict
 
+function Awake() {
+	this.gameObject.AddComponent(RabbitPlayer);
+}
 
 @RPC
 function attachCharacterNetwork(networkPlayer : NetworkPlayer) {

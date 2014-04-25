@@ -96,6 +96,8 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
 
 @RPC
 public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rotation : Quaternion, damage: int, attackerPos: Vector3, attackerID: NetworkViewID) {
+	Debug.Log("Player " + networkPlayer + " is dying remotely");
+
     var attacker: GameObject = null;
     var attackerNV = NetworkView.Find(attackerID);
     if (attackerNV != null)
@@ -141,6 +143,8 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
 }
 
 function Respawn() {
+	this.transform.root.GetComponentInChildren(Health).ResetHealth();
+
 	// enable the character's collider so it can begin colliding again
 	enableCharacterCollider(true);
 

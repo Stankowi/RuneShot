@@ -16,10 +16,10 @@ function Awake() {
 	displayFlagMsg = false;
 }
 
-function Start() {
+/*function Start() {
 	// store reference to this in RabbitMode
 	HandlerManager.GameHandler.RabbitGameMode.Flag = this;
-}
+}*/
 
 function Update() {
 	// move the flag towards the floor only if it isn't grounded already
@@ -43,14 +43,14 @@ function OnTriggerEnter(other: Collider) {
 	// ensure the collider is a player
 	if(other.CompareTag("Player")) {
 		// store reference to the RabbitPlayer component
-		var rabbitPlayer: RabbitPlayer = other.GetComponent(RabbitPlayer);
+		var rabbitPlayer: RabbitPlayer = other.GetComponentInChildren(RabbitPlayer);
 		
 		if(rabbitPlayer) {
 			var rabbitPlayerNetID = getOwnerNetworkID(rabbitPlayer);
 			// send an RPC to all connected clients that the flag is being picked up
 			this.networkView.RPC("Pickup", RPCMode.AllBuffered, rabbitPlayerNetID);
 			// set the current owner of the rabbit flag
-			HandlerManager.GameHandler.RabbitGameMode.playerPickedUpFlag(other.GetComponentInChildren(CharacterNetwork).networkPlayer, rabbitPlayerNetID);
+			HandlerManager.GameHandler.RabbitGameMode.playerPickedUpFlag(other.gameObject, other.GetComponentInChildren(CharacterNetwork).networkPlayer, rabbitPlayerNetID);
 		}
 	}
 }
@@ -78,15 +78,28 @@ function Pickup(netViewID: NetworkViewID) {
 		Debug.Log(playerNetView.gameObject.name + " (ID: " + netViewID + ") has the flag!");
 		var playerRootObj = playerNetView.gameObject.transform.root;
 		var rabbitPlayer = playerRootObj.GetComponent(RabbitPlayer);
+		if(!rabbitPlayer) {
+			rabbitPlayer = playerRootObj.GetComponentInChildren(RabbitPlayer);
+		}
 		
 		if(rabbitPlayer) {
+			Debug.Log("Rabbit Player object = " + rabbitPlayer.name);
+		
 			this.transform.position = rabbitPlayer.RabbitFlagTransform.position;
 			this.transform.parent = rabbitPlayer.RabbitFlagTransform;
 			pickedUp = true;
 			canPickUp = false;
 			
+			var netPlayer: CharacterNetwork = rabbitPlayer.GetComponent(CharacterNetwork);
+			if(!netPlayer) {
+				netPlayer = rabbitPlayer.GetComponentInChildren(CharacterNetwork);
+			}
+			if(!netPlayer && rabbitPlayer.transform.parent != null) {
+				netPlayer = rabbitPlayer.transform.parent.gameObject.GetComponentInChildren(CharacterNetwork);
+			}
+			
 			// see if I have the flag
-			if(rabbitPlayer.GetComponentInChildren(CharacterNetwork).networkPlayer == Network.player) {
+			if(netPlayer.networkPlayer == Network.player) {
 				Debug.Log("I have the flag!");
 				displayFlagMsg = true;
 			}

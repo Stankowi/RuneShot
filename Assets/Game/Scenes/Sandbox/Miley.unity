@@ -1287,9 +1287,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1359624271}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad554e7f9785b3e40af52cfd9d2eec03, type: 3}
+  m_Script: {fileID: 11500000, guid: 0cac6e221ec10ec438bdaed1747705e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flag: {fileID: 1510397004}
 --- !u!1 &1413053934
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,6 +1302,7 @@ GameObject:
   - 33: {fileID: 1413053938}
   - 64: {fileID: 1413053937}
   - 23: {fileID: 1413053936}
+  - 114: {fileID: 1413053939}
   m_Layer: 16
   m_Name: Ground
   m_TagString: Untagged
@@ -1363,6 +1365,17 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1413053934}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1413053939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1413053934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09ec7710097818543bf64cb50a68c2d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1496337321
 GameObject:
   m_ObjectHideFlags: 0
@@ -3059,7 +3072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameName: RuneShot Game Jam
-  maxNPCs: 8
+  maxNPCs: 0
   minSpawnTime: 4
   maxSpawnTime: 8
 --- !u!1 &2039447731

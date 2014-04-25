@@ -6,6 +6,7 @@ var rabbitFlagImage: Texture2D = Resources.Load("Game Modes/Rabbit/rabbitFlagInd
 public function AddDeath(player : NetworkPlayer) {
     var playerName : String = GetPlayerName(player);
     if(players.ContainsKey(playerName)) {
+    	Debug.Log("Adding death to player " + playerName);
         players[playerName].deaths++;
         SendScoreUpdate(playerName);
     }
@@ -14,6 +15,7 @@ public function AddDeath(player : NetworkPlayer) {
 public function AddKill(player : NetworkPlayer) {
     var playerName : String = GetPlayerName(player);
     if(players.ContainsKey(playerName)) {
+    	Debug.Log("Adding kill to player " + playerName);
         players[playerName].kills++;
         SendScoreUpdate(playerName);
     }
@@ -22,6 +24,7 @@ public function AddKill(player : NetworkPlayer) {
 public function RemoveKill(player : NetworkPlayer) {
     var playerName : String = GetPlayerName(player);
     if(players.ContainsKey(playerName)) {
+    	Debug.Log("Removing kill from player " + playerName);
         players[playerName].kills--;
         SendScoreUpdate(playerName);
     }
@@ -81,7 +84,8 @@ function OnGUI() {
 }
 
 function GetPlayerName(player : NetworkPlayer) {
-    return player.ipAddress + ":" + player.port;
+	Debug.Log(player.ipAddress + ":" + player.port + ":" + player);
+    return player.ipAddress + ":" + player.port + ":" + player;
 }
 
 function OnPlayerConnected(player: NetworkPlayer) {
@@ -144,6 +148,7 @@ function SendScoreUpdate(playerName : String) {
 @RPC
 function UpdateScore(player : String, displayName : String, kills : int, deaths : int, score : int, isRabbit : boolean, connected : boolean) {
     if(!players.ContainsKey(player)) {
+    	Debug.Log("Adding new player with key: " + player);
         players.Add(player,new PlayerScore());
     }
     players[player].displayName = displayName;

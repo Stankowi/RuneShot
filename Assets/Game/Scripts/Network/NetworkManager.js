@@ -272,7 +272,7 @@ function SendOutDisplayName() { //scoreboard : GameObject){
     if(scoreboard != null){
         var score : Scoreboard = scoreboard.GetComponent(Scoreboard);
         if(score != null){       
-            var networkPlayerName = Network.player.externalIP + ":" + Network.player.externalPort;
+            var networkPlayerName = Network.player.externalIP + ":" + Network.player.externalPort + ":" + Network.player;
             score.SendPlayerInformationToOthers(networkPlayerName, playerName);
         }
     }
