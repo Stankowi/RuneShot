@@ -97,6 +97,9 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
         attacker = attackerNV.gameObject;
     }
 
+	// notify the game mode that a player has died
+	HandlerManager.GameHandler.CurrentGameMode.OnPlayerDeath(networkPlayer);
+
     // Only the server should be sending out the scoreboard updates.
     if(Network.isServer) {
         var scoreboardGO : GameObject = GameObject.Find("Scoreboard(Clone)");
