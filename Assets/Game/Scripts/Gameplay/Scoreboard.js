@@ -1,6 +1,7 @@
 #pragma strict
 
 var players = new Dictionary.<String,PlayerScore>();
+var rabbitFlagImage: Texture2D = Resources.Load("Game Modes/Rabbit/rabbitFlagIndicator-small", Texture2D);
 
 public function AddDeath(player : NetworkPlayer) {
     var playerName : String = GetPlayerName(player);
@@ -33,6 +34,22 @@ public function GetDisplayName(player : NetworkPlayer){
     }
 }
 
+public function ChangeFlagState(player : NetworkPlayer, hasFlag : boolean) {
+    var playerName : String = GetPlayerName(player);
+    if(players.ContainsKey(playerName)) {
+        players[playerName].isRabbit = hasFlag;
+        SendScoreUpdate(playerName);
+    }
+}
+
+public function AddPlayerScore(player: NetworkPlayer, addedScore: int) {
+	var playerName: String = GetPlayerName(player);
+	if(players.ContainsKey(playerName)) {
+        players[playerName].score += addedScore;
+        SendScoreUpdate(playerName);
+    }
+}
+
 function OnGUI() {
     var nameWidth = 120;
     var statsWidth = 60;
@@ -43,6 +60,8 @@ function OnGUI() {
     GUILayout.Label("Name",GUILayout.Width(nameWidth));
     GUILayout.Label("Kills",GUILayout.Width(statsWidth));
     GUILayout.Label("Deaths",GUILayout.Width(statsWidth));
+	GUILayout.Label("Score",GUILayout.Width(statsWidth));
+    GUILayout.Label("RBT?",GUILayout.Width(statsWidth));
     GUILayout.EndHorizontal();
     var e = players.GetEnumerator();
     var guiColor : Color = GUI.color;
@@ -55,6 +74,12 @@ function OnGUI() {
         GUILayout.Label(e.Current.Value.displayName,GUILayout.Width(nameWidth));
         GUILayout.Label(e.Current.Value.kills.ToString(),GUILayout.Width(statsWidth));
         GUILayout.Label(e.Current.Value.deaths.ToString(),GUILayout.Width(statsWidth));
+        GUILayout.Label(e.Current.Value.score.ToString(),GUILayout.Width(statsWidth));
+        if(e.Current.Value.isRabbit) {
+            GUILayout.Label(rabbitFlagImage,GUILayout.ExpandWidth(false),GUILayout.ExpandHeight(false),GUILayout.MaxWidth(25.0f),GUILayout.MaxHeight(25.0f));
+        } else {
+            GUILayout.Label("");
+        }
         GUILayout.EndHorizontal();
         GUI.color = guiColor;
     }
@@ -79,6 +104,8 @@ function OnPlayerConnected(player: NetworkPlayer) {
                         e.Current.Value.displayName,
                         e.Current.Value.kills,
                         e.Current.Value.deaths,
+                        e.Current.Value.score,
+                        e.Current.Value.isRabbit,
                         e.Current.Value.connected
                     );
     }
@@ -92,6 +119,8 @@ function SendPlayerInformationToOthers(player: String, displayName: String){
                     displayName,
                     0,
                     0,
+                    0,
+                    false,
                     true);
 }
     
@@ -112,18 +141,22 @@ function SendScoreUpdate(playerName : String) {
                         players[playerName].displayName,
                         players[playerName].kills,
                         players[playerName].deaths,
+                        players[playerName].score,
+                        players[playerName].isRabbit,
                         players[playerName].connected
                     );
     }
 }
 
 @RPC
-function UpdateScore(player : String, displayName : String, kills : int, deaths : int, connected : boolean) {
+function UpdateScore(player : String, displayName : String, kills : int, deaths : int, score : int, isRabbit : boolean, connected : boolean) {
     if(!players.ContainsKey(player)) {
         players.Add(player,new PlayerScore());
     }
     players[player].displayName = displayName;
     players[player].kills = kills;
     players[player].deaths = deaths;
+	players[player].score = score;
+    players[player].isRabbit = isRabbit;
     players[player].connected = connected;
 }

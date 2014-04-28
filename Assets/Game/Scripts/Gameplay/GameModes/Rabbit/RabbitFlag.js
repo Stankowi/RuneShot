@@ -1,9 +1,16 @@
 ﻿#pragma strict
 
+public var rabbitFlagImage: Texture2D;
+
 private var layerMask: int;
 private var pickedUp: boolean;
 private var canPickUp: boolean;
 private var displayFlagMsg: boolean;
+private var lastRabbitPlayer: RabbitPlayer;
+
+public function get PickedUp() : boolean {
+	return pickedUp;
+}
 
 function Awake() {
     // set up the initial settings
@@ -27,7 +34,15 @@ function Update() {
 	}
 }
 
+@RPC
+function syncPosition(syncedPosition: Vector3) {
+	Debug.Log("I'm being synced with position " + syncedPosition);
+	this.transform.position = syncedPosition;
+}
+
 function OnTriggerEnter(other: Collider) {
+	Debug.Log("I can pick up? " + canPickUp);
+
 	// not able to be picked up due to cooldown or already picked up by another player, therefore return
 	if(!canPickUp) {
 		return;
@@ -43,12 +58,19 @@ function OnTriggerEnter(other: Collider) {
 		// store reference to the RabbitPlayer component
 		var rabbitPlayer: RabbitPlayer = other.GetComponent(RabbitPlayer);
 		
+		if(lastRabbitPlayer != null && lastRabbitPlayer == rabbitPlayer) {
+			lastRabbitPlayer = null;
+			return;
+		}
+		
 		// ensure that we found the RabbitPlayer component
 		if(rabbitPlayer) {
-            var rabbitPlayerNetID = getOwnerNetworkID(rabbitPlayer);
+			lastRabbitPlayer = rabbitPlayer;
+		
+            var rabbitPlayerNetID = getOwnerNetworkID(lastRabbitPlayer);
 			// send an RPC to all connected clients that the flag is being picked up
-			this.networkView.RPC("Pickup", RPCMode.AllBuffered, rabbitPlayerNetID);
-			this.networkView.RPC("relayToRabbitMode", RPCMode.AllBuffered, other.GetComponentInChildren(CharacterNetwork).networkPlayer, rabbitPlayerNetID);
+			this.networkView.RPC("Pickup", RPCMode.All, rabbitPlayerNetID);
+			this.networkView.RPC("relayToRabbitMode", RPCMode.All, other.GetComponentInChildren(CharacterNetwork).networkPlayer, rabbitPlayerNetID);
 		}
 	}
 }
@@ -101,28 +123,45 @@ function Pickup(netViewID: NetworkViewID) {
 }
 
 @RPC
-function Drop() {
+function Drop(playerDisconnected: boolean) {
+	Debug.Log("RPC - Drop");
     this.transform.parent = null;
     pickedUp = false;
-    canPickUp = true;
     displayFlagMsg = false;
+    if(!playerDisconnected) {
+	    var particles: ParticleSystem = GetComponentInChildren(ParticleSystem);
+	    if(particles) {
+	    	particles.Stop();
+	    }
+	    WaitForCooldownOnFlag();
+    } else {
+    	canPickUp = true;
+    }
 }
 
 // hacked in to get the client holding the flag to drop it properly
-function DropFromHolder() {
+/*function DropFromHolder() {
 	this.transform.parent = null;
     pickedUp = false;
+    canPickUp = false;
     displayFlagMsg = false;
-    yield WaitForCooldownOnFlag();
-}
+    Debug.Log("Picked up? " + pickedUp + " | Can pick up? " + canPickUp + " | Waiting for cooldown on flag...");
+    WaitForCooldownOnFlag();
+}*/
 
 function WaitForCooldownOnFlag() {
-	yield WaitForSeconds(10);
+	yield WaitForSeconds(3);
+	Debug.Log("I can pick up ze flag now!");
 	canPickUp = true;
+	var particles: ParticleSystem = GetComponentInChildren(ParticleSystem);
+    if(particles) {
+    	particles.Play();
+    }
 }
 
 function OnGUI() {
     if(displayFlagMsg) {
-        GUI.Label(Rect(Screen.width / 2 - 100.0f, 25.0f, 200.0f, 25.0f), "You have the flag.. RUN!");
+        //GUI.Label(Rect(Screen.width / 2 - 100.0f, 25.0f, 200.0f, 25.0f), "You have the flag.. RUN!");
+        GUI.DrawTexture(Rect(Screen.width / 2 - 25.0f, 25.0f, 50.0f, 50.0f), rabbitFlagImage);
     }
 }

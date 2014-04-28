@@ -113,10 +113,20 @@ public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rota
                     if(networkChar.networkPlayer == networkPlayer)
                     {
                         scoreboard.RemoveKill(networkChar.networkPlayer);
+                        
+                        // if the player killed him/herself, deduct 2 points from the score
+                        if(HandlerManager.GameHandler.RabbitGameMode != null) {
+                        	scoreboard.AddPlayerScore(networkChar.networkPlayer, -2);
+                        }
                     }
                     else
                     {
                         scoreboard.AddKill(networkChar.networkPlayer);
+                        
+                        if(HandlerManager.GameHandler.RabbitGameMode != null) {
+                        	// if the player killed was the rabbit holder, give 5 points to the killer, otherwise give 2
+                        	scoreboard.AddPlayerScore(networkChar.networkPlayer, HandlerManager.GameHandler.RabbitGameMode.calculateScoreFromKill(networkPlayer));
+		                }
                     }
 
                     //Tell the player who killed him:
@@ -159,7 +169,9 @@ function EnableDeathCam() {
     var renderers = transform.root.GetComponentsInChildren(Renderer);
     for(var renderIndex = 0; renderIndex < renderers.Length; renderIndex++) {
         var renderer : Renderer = renderers[renderIndex] as Renderer;
-        renderer.enabled = false;
+        if(!renderer.CompareTag("Flag")) {
+        	renderer.enabled = false;
+        }
     }
 
 }
@@ -179,7 +191,7 @@ public function DisableDeathCam() {
     var renderers = transform.root.GetComponentsInChildren(Renderer);
     for(var renderIndex = 0; renderIndex < renderers.Length; renderIndex++) {
         var renderer : Renderer = renderers[renderIndex] as Renderer;
-        renderer.enabled = true;
+		renderer.enabled = true;
     }
 }
 
