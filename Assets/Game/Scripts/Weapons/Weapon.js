@@ -47,6 +47,31 @@ class Weapon extends MonoBehaviour {
         return critDamage;
     }
     
+    function GetDamageMultiplier() {
+    
+        // check to see if a powerup augments the multiplier
+        if (launchingPlayer) {
+        
+            var characterStatusEffect = launchingPlayer.gameObject.GetComponentInChildren(CharacterStatusEffect);
+            if (characterStatusEffect &&
+                characterStatusEffect.Powerup &&
+                characterStatusEffect.Powerup.GetPowerupType() == PowerupType.Damage) {
+                
+                var damagePowerup = (characterStatusEffect.Powerup as DamagePowerup);
+                var damageMultiplier = damagePowerup.GetDamageMultiplier();
+                
+                //Debug.Log("DamagePowerup applied damageMultiplier: " + damageMultiplier);
+                
+                return damageMultiplier;
+
+            }
+        }
+
+        // no powerups found - return default     
+        return 1.0;
+        
+    }
+    
     function GetDamageRadius() {
         return damageRadius;
     }
@@ -91,9 +116,9 @@ class Weapon extends MonoBehaviour {
     
     function GetDamage(isCritical: boolean): int {
     	if (isCritical) {
-    		return GetCritDamage();
+    		return GetCritDamage() * GetDamageMultiplier();
     	} 
     	
-    	return GetNormalDamage();
+    	return GetNormalDamage() * GetDamageMultiplier();
     }
 }

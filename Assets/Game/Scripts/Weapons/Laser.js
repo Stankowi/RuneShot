@@ -104,6 +104,8 @@ class Laser extends Weapon {
         
         // The grenade should not collide with the player that spawns it until it is safely outside that player.
         // The easiest way to accomplish this is to tell Physics to ignore collision between the player and the grenade.
-        Physics.IgnoreCollision(launchingPlayer.collider,gameObject.collider);
+        if (launchingPlayer.collider != null) {
+            Physics.IgnoreCollision(launchingPlayer.collider,gameObject.collider);
+        }
     }
 }

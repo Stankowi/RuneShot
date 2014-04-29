@@ -3,6 +3,7 @@
 public var networkPlayer: NetworkPlayer;
 public var localPlayer: GameObject;
 public var keyInventory : KeyInventory;
+public var characterStatusEffect : CharacterStatusEffect;
 private var networkManager: NetworkManager;
 private var showKiller = false;
 private var lastKilledBy = "unknown";
