@@ -1,5 +1,5 @@
 class BouncyGranade extends Weapon {
-    private static var ttl: int = 5;
+    private static var ttl: int = 2;
 
     private var collisions: int = 0;
     private var explodeAt: int = 0;
