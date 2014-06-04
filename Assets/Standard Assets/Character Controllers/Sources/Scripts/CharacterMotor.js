@@ -5,6 +5,8 @@
 // Does this script currently respond to input?
 var canControl : boolean = true;
 
+var motorInactive : boolean = false;
+
 var useFixedUpdate : boolean = true;
 
 // For the next variables, @System.NonSerialized tells Unity to not serialize the variable or show it in the inspector view.
@@ -336,10 +338,14 @@ function Update () {
 		UpdateFunction();
 }
 
-private function ApplyInputVelocityChange (velocity : Vector3) {	
-	if (!canControl)
+private function ApplyInputVelocityChange (velocity : Vector3) {
+	if (motorInactive) {
+		return;
+	}
+
+	if (!canControl) {
 		inputMoveDirection = Vector3.zero;
-	
+	}
 	// Find desired velocity
 	var desiredVelocity : Vector3;
 	if (grounded && TooSteep()) {
@@ -387,7 +393,10 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 }
 
 private function ApplyGravityAndJumping (velocity : Vector3) {
-	
+	if (motorInactive) {
+		return;
+	}
+
 	if (!inputJump || !canControl) {
 		jumping.holdingJumpButton = false;
 		jumping.lastButtonDownTime = -100;
@@ -560,6 +569,10 @@ function GetDirection () {
 
 function SetControllable (controllable : boolean) {
 	canControl = controllable;
+}
+
+function SetMotorActive(active : boolean) {
+	motorInactive = !active;
 }
 
 // Project a direction onto elliptical quater segments based on forward, sideways, and backwards speed.

@@ -18,6 +18,8 @@ function OnTriggerEnter  (player : Collider) {
     if ( networkChar) 
     {
         var motor:CharacterMotor = player.GetComponent(CharacterMotor);
-        motor.SetVelocity (direction.normalized * boostAmount);
+        if (motor) {
+        	motor.SetVelocity (direction.normalized * boostAmount);
+        }
     } 
 }
