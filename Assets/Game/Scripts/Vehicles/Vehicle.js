@@ -14,6 +14,8 @@ class Vehicle extends MonoBehaviour {
 	public var driverDoor : Transform;
 	public var driverSeat : Transform;
 
+	public var scriptNetView : NetworkView;
+
 	private var horizontalInput : float = 0.0;
 	private var verticalInput : float = 0.0;
 
@@ -45,8 +47,8 @@ class Vehicle extends MonoBehaviour {
 	}
 
 	function OnSerializeNetworkView(stream : BitStream, info : NetworkMessageInfo) {
-		//stream.Serialize(this.motorSpeed);
-		//stream.Serialize(this.turnWheels);
+		stream.Serialize(this.motorSpeed);
+		stream.Serialize(this.steerAngle);
 		if (stream.isWriting) {
 			Debug.Log("OnSerializeNetworkView : writing");
 		} else {
@@ -72,10 +74,18 @@ class Vehicle extends MonoBehaviour {
 			this.rigidbody.isKinematic = false;
 
 			if (!netCall) {
-                var charNetView : NetworkView = player.GetComponentInChildren(CharacterGraphics).networkView;
-                if (charNetView) {
-		        	this.networkView.RPC("NetBoard", RPCMode.Others, charNetView.viewID, this.networkView.viewID);
-		        }
+				var charNetView : NetworkView = player.GetComponentInChildren(CharacterGraphics).networkView;
+				if (charNetView) {
+					var newVehicleNetViewID : NetworkViewID = this.networkView.viewID;
+					var newScriptNetViewID : NetworkViewID = this.scriptNetView.viewID;
+					if (!this.networkView.isMine) {
+						newVehicleNetViewID = Network.AllocateViewID();
+						newScriptNetViewID = Network.AllocateViewID();
+					}
+					this.networkView.RPC("NetBoard", RPCMode.Others, charNetView.viewID, this.networkView.viewID, newVehicleNetViewID, newScriptNetViewID);
+					this.networkView.viewID = newVehicleNetViewID;
+					this.scriptNetView.viewID = newScriptNetViewID;
+				}
 			}
 		}
 	}
@@ -104,36 +114,38 @@ class Vehicle extends MonoBehaviour {
 			}
 
 			if (!netCall) {
-                var charNetView : NetworkView = player.GetComponentInChildren(CharacterGraphics).networkView;
-                if (charNetView) {
-		        	this.networkView.RPC("NetDepart", RPCMode.Others, charNetView.viewID, this.networkView.viewID);
-		        }
+				var charNetView : NetworkView = player.GetComponentInChildren(CharacterGraphics).networkView;
+				if (charNetView) {
+					this.networkView.RPC("NetDepart", RPCMode.Others, charNetView.viewID, this.networkView.viewID);
+				}
 			}
 		}
 	}
 
 	@RPC
-	function NetBoard(playerNetViewID : NetworkViewID, vehicleNetViewID : NetworkViewID) {
-	    var playerNetView : NetworkView = NetworkView.Find(playerNetViewID);
-	    var vehicleNetView : NetworkView = NetworkView.Find(vehicleNetViewID);
-	    if (playerNetView && vehicleNetView) {
-	        var vehicleObj : Vehicle = vehicleNetView.GetComponent(Vehicle) as Vehicle;
-	        vehicleObj.Board(playerNetView.gameObject, true);
-	        //playerNetView.transform.root.parent = vehicleObj.driverSeat;
-	        //vehicleObj.occupant = playerNetView.gameObject;
-	    }
+	function NetBoard(playerNetViewID : NetworkViewID, vehicleNetViewID : NetworkViewID, newVehicleNetViewID : NetworkViewID, newScriptNetViewID : NetworkViewID) {
+		var playerNetView : NetworkView = NetworkView.Find(playerNetViewID);
+		var vehicleNetView : NetworkView = NetworkView.Find(vehicleNetViewID);
+		if (playerNetView && vehicleNetView) {
+			var vehicleObj : Vehicle = vehicleNetView.GetComponent(Vehicle) as Vehicle;
+			vehicleObj.Board(playerNetView.gameObject, true);
+			vehicleNetView.viewID = newVehicleNetViewID;
+			vehicleObj.scriptNetView.viewID = newScriptNetViewID;
+			//playerNetView.transform.root.parent = vehicleObj.driverSeat;
+			//vehicleObj.occupant = playerNetView.gameObject;
+		}
 	}
 
 	@RPC
 	function NetDepart(playerNetViewID : NetworkViewID, vehicleNetViewID : NetworkViewID) {
-	    var playerNetView : NetworkView = NetworkView.Find(playerNetViewID);
-	    var vehicleNetView : NetworkView = NetworkView.Find(vehicleNetViewID);
-	    if (playerNetView && vehicleNetView) {
-	        var vehicleObj : Vehicle = vehicleNetView.GetComponent(Vehicle) as Vehicle;
-	        vehicleObj.Depart(playerNetView.gameObject, true);
-	        //vehicleObj.occupant.transform.parent = null;
-	        //vehicleObj.occupant = null;
-	    }
+		var playerNetView : NetworkView = NetworkView.Find(playerNetViewID);
+		var vehicleNetView : NetworkView = NetworkView.Find(vehicleNetViewID);
+		if (playerNetView && vehicleNetView) {
+			var vehicleObj : Vehicle = vehicleNetView.GetComponent(Vehicle) as Vehicle;
+			vehicleObj.Depart(playerNetView.gameObject, true);
+			//vehicleObj.occupant.transform.parent = null;
+			//vehicleObj.occupant = null;
+		}
 	}
 
 	public function SetControls(axes : Vector2) {
