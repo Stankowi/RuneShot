@@ -2,6 +2,9 @@ private var motor : CharacterMotor;
 private var characterStatusEffect : CharacterStatusEffect;
 private var boardedVehicle : Vehicle;
 
+private var lastSentAxes : Vector3 = Vector3.zero;
+private var vehicleNetView : NetworkView = null;
+
 // Use this for initialization
 function Awake () {
     motor = GetComponent(CharacterMotor);
@@ -11,12 +14,28 @@ function Start() {
     characterStatusEffect = ComponentUtil.GetComponentInHierarchy(gameObject, CharacterStatusEffect);
 }
 
+function StartSendingInput(nv : NetworkView) {
+	this.vehicleNetView = nv;
+	this.lastSentAxes = Vector3.zero;
+}
+
+function StopSendingInput(nv : NetworkView) {
+	if (nv == this.vehicleNetView) {
+		this.vehicleNetView = null;
+	}
+}
+
 // Update is called once per frame
 function Update () {
 
     // Get the input vector from keyboard or analog stick
-    var joystick : Vector2 = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-    var directionVector : Vector3 = new Vector3(joystick.x, 0, joystick.y);
+    var directionVector : Vector3 = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+	// send controls to vehicle if i'm in a vehicle
+	if (this.vehicleNetView && Vector3.Distance(directionVector, this.lastSentAxes) > 0.01) {
+		this.vehicleNetView.RPC("SetInputAxes", RPCMode.Server, directionVector.x, directionVector.z);
+		this.lastSentAxes = directionVector;
+	}
 
     if (directionVector != Vector3.zero) {
         // Get the length of the directon vector and then normalize it
@@ -64,20 +83,14 @@ function Update () {
         if (Physics.Raycast(projRay, hit, 1.0)) {
             var vehicle : Vehicle = hit.transform.gameObject.GetComponent(Vehicle) as Vehicle;
             if (vehicle) {
-                if (vehicle.occupant === this.gameObject) {
-                    vehicle.Depart(this.gameObject, false);
-                    this.boardedVehicle = null;
-                } else {
-                    vehicle.Board(this.gameObject, false);
-                    if (vehicle.occupant === this.gameObject) {
-                        this.boardedVehicle = vehicle;
-                    }
-                }
+            	var id : NetworkViewID = this.GetComponentInChildren(CharacterGraphics).networkView.viewID;
+            	if (Network.connections.Length != 0) {
+            		vehicle.networkView.RPC("BoardOrDepart", RPCMode.Server, id);
+            	} else {
+            		vehicle.BoardOrDepart_SinglePlayer(id);
+            	}
             }
         }
-    }
-    if (this.boardedVehicle) {
-        this.boardedVehicle.SetControls(joystick);
     }
 }
 

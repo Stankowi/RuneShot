@@ -9,15 +9,16 @@ class Vehicle extends MonoBehaviour {
 	public var speedRange : float = 100.0;
 	private var steerAngle : float;
 	private var motorSpeed : float;
+	private var axes : Vector2;
+	private var readSinglePlayerInput : boolean = false;
 
-	public var occupant : GameObject;
+	private var occupantNetView : NetworkView;
+	private var occupantCharacter : GameObject;
+
 	public var driverDoor : Transform;
 	public var driverSeat : Transform;
 
 	public var scriptNetView : NetworkView;
-
-	private var horizontalInput : float = 0.0;
-	private var verticalInput : float = 0.0;
 
 	function Start() {
 		this.initialTurns = new float[this.turnWheels.length];
@@ -27,17 +28,20 @@ class Vehicle extends MonoBehaviour {
 	}
 
 	function Update() {
+		if (this.readSinglePlayerInput) {
+			this.axes = Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+		}
 		var targetDoorAngle : float = 45.0;
-		if (this.occupant) {
+		if (this.occupantCharacter) {
 			targetDoorAngle = 0.0;
-			this.occupant.transform.position = driverSeat.transform.position;
+			this.occupantCharacter.transform.position = driverSeat.transform.position;
 		}
 		this.driverDoor.localEulerAngles.y = Mathf.LerpAngle(this.driverDoor.localEulerAngles.y, targetDoorAngle, Time.deltaTime * 5);
 	}
 
 	function FixedUpdate() {
-		this.motorSpeed = -this.verticalInput * this.speedRange;
-		this.steerAngle = this.horizontalInput * this.steeringRange;
+		this.motorSpeed = -this.axes.y * this.speedRange;
+		this.steerAngle = this.axes.x * this.steeringRange;
 		this.rigidbody.centerOfMass = Vector3(0, 0, this.motorSpeed / this.speedRange); // hack to avoid rolling the truck over too often
 		if (this.transform.position.y < -0.1) {
 			this.transform.position.y = -0.1; // hack to work around how wheelcolliders sometimes allow the truck to fall through collision meshes
@@ -46,122 +50,9 @@ class Vehicle extends MonoBehaviour {
 		this.UpdateMotors();
 	}
 
-	function OnSerializeNetworkView(stream : BitStream, info : NetworkMessageInfo) {
-		stream.Serialize(this.motorSpeed);
-		stream.Serialize(this.steerAngle);
-		if (stream.isWriting) {
-			Debug.Log("OnSerializeNetworkView : writing");
-		} else {
-			Debug.Log("OnSerializeNetworkView : reading");
-		}
-	}
-
-	public function Board(player : GameObject, netCall : boolean) {
-		if (!this.occupant && Vector3.Distance(player.transform.position, this.transform.position) < 2.0) {
-			this.occupant = player;
-			player.transform.parent = this.driverSeat.transform;
-			player.transform.rotation = this.driverSeat.rotation;
-
-			var charMotor : CharacterMotor = player.GetComponent(CharacterMotor) as CharacterMotor;
-			var charController : CharacterController = player.GetComponent(CharacterController) as CharacterController;
-			if (charMotor) {
-				charMotor.SetMotorActive(false);
-			}
-			if (charController) {
-				charController.detectCollisions = false;
-			}
-
-			this.rigidbody.isKinematic = false;
-
-			if (!netCall) {
-				var charNetView : NetworkView = player.GetComponentInChildren(CharacterGraphics).networkView;
-				if (charNetView) {
-					var newVehicleNetViewID : NetworkViewID = this.networkView.viewID;
-					var newScriptNetViewID : NetworkViewID = this.scriptNetView.viewID;
-					if (!this.networkView.isMine) {
-						newVehicleNetViewID = Network.AllocateViewID();
-						newScriptNetViewID = Network.AllocateViewID();
-					}
-					this.networkView.RPC("NetBoard", RPCMode.Others, charNetView.viewID, this.networkView.viewID, newVehicleNetViewID, newScriptNetViewID);
-					this.networkView.viewID = newVehicleNetViewID;
-					this.scriptNetView.viewID = newScriptNetViewID;
-				}
-			}
-		}
-	}
-
-	public function Depart(player : GameObject, netCall : boolean) {
-		if (this.occupant === player) {
-			this.occupant = null;
-
-			player.transform.parent = null;
-			player.transform.rotation = Quaternion.Euler(0, player.transform.rotation.eulerAngles.y, 0);
-			if (player.transform.position.y < 0.5) {
-				player.transform.position.y = 0.5; // hack to avoid placing the player beneath the ground
-			}
-
-			this.rigidbody.isKinematic = true;
-			this.SetControls(Vector2.zero);
-
-			var charMotor : CharacterMotor = player.GetComponent(CharacterMotor) as CharacterMotor;
-			var charController : CharacterController = player.GetComponent(CharacterController) as CharacterController;
-			if (charMotor) {
-				charMotor.movement.velocity = this.rigidbody.velocity;
-				charMotor.SetMotorActive(true);
-			}
-			if (charController) {
-				charController.detectCollisions = true;
-			}
-
-			if (!netCall) {
-				var charNetView : NetworkView = player.GetComponentInChildren(CharacterGraphics).networkView;
-				if (charNetView) {
-					this.networkView.RPC("NetDepart", RPCMode.Others, charNetView.viewID, this.networkView.viewID);
-				}
-			}
-		}
-	}
-
-	@RPC
-	function NetBoard(playerNetViewID : NetworkViewID, vehicleNetViewID : NetworkViewID, newVehicleNetViewID : NetworkViewID, newScriptNetViewID : NetworkViewID) {
-		var playerNetView : NetworkView = NetworkView.Find(playerNetViewID);
-		var vehicleNetView : NetworkView = NetworkView.Find(vehicleNetViewID);
-		if (playerNetView && vehicleNetView) {
-			var vehicleObj : Vehicle = vehicleNetView.GetComponent(Vehicle) as Vehicle;
-			vehicleObj.Board(playerNetView.gameObject, true);
-			vehicleNetView.viewID = newVehicleNetViewID;
-			vehicleObj.scriptNetView.viewID = newScriptNetViewID;
-			//playerNetView.transform.root.parent = vehicleObj.driverSeat;
-			//vehicleObj.occupant = playerNetView.gameObject;
-		}
-	}
-
-	@RPC
-	function NetDepart(playerNetViewID : NetworkViewID, vehicleNetViewID : NetworkViewID) {
-		var playerNetView : NetworkView = NetworkView.Find(playerNetViewID);
-		var vehicleNetView : NetworkView = NetworkView.Find(vehicleNetViewID);
-		if (playerNetView && vehicleNetView) {
-			var vehicleObj : Vehicle = vehicleNetView.GetComponent(Vehicle) as Vehicle;
-			vehicleObj.Depart(playerNetView.gameObject, true);
-			//vehicleObj.occupant.transform.parent = null;
-			//vehicleObj.occupant = null;
-		}
-	}
-
-	public function SetControls(axes : Vector2) {
-		this.horizontalInput = axes.x;
-		this.verticalInput = axes.y;
-	}
-
 	private function UpdateMotors() {
 		for (var motor : WheelCollider in this.motorWheels) {
 			motor.motorTorque = this.motorSpeed;
-		}
-	}
-
-	private function SetColliderTriggers(enabled : boolean) {
-		for (var collider : Component in this.GetComponents(BoxCollider)) {
-			(collider as Collider).isTrigger = enabled;
 		}
 	}
 
@@ -174,6 +65,88 @@ class Vehicle extends MonoBehaviour {
 			} else {
 				trans.localEulerAngles.y = this.initialTurns[index] + steerAngle;
 			}
+		}
+	}
+
+	function OnSerializeNetworkView(stream : BitStream, info : NetworkMessageInfo) {
+		stream.Serialize(this.motorSpeed);
+		stream.Serialize(this.steerAngle);
+	}
+
+	@RPC
+	function SetInputAxes(x : float, y : float, info : NetworkMessageInfo) {
+		if (info.sender == this.occupantNetView.owner) {
+			this.axes = Vector2(x, y);
+		}
+	}
+
+	@RPC
+	function BoardOrDepart_SinglePlayer(id : NetworkViewID) {
+		if (Network.connections.Length == 0) {
+			if (!this.occupantNetView) {
+				this.Board(id);
+				this.readSinglePlayerInput = true;
+			} else if (this.occupantNetView.viewID == id) {
+				this.Depart(id);
+				this.readSinglePlayerInput = false;
+			}
+		}
+	}
+
+	@RPC
+	function BoardOrDepart(id : NetworkViewID, info : NetworkMessageInfo) {
+		if (Network.isServer) {
+			if (!this.occupantNetView) {
+				this.Board(id);
+				this.networkView.RPC("Board", RPCMode.OthersBuffered, id);
+				NetworkView.Find(id).RPC("StartSendingInput", info.sender, this.networkView.viewID);
+			} else if (this.occupantNetView.viewID == id) {
+				this.Depart(id);
+				this.networkView.RPC("Depart", RPCMode.OthersBuffered, id);
+				NetworkView.Find(id).RPC("StopSendingInput", info.sender, this.networkView.viewID);
+			}
+		}
+	}
+
+	@RPC
+	public function Board(id : NetworkViewID) {
+		this.occupantNetView = NetworkView.Find(id);
+		this.occupantCharacter = this.occupantNetView.transform.root.gameObject;
+		this.occupantCharacter.transform.parent = this.driverSeat.transform;
+		this.occupantCharacter.transform.rotation = this.driverSeat.rotation;
+
+		this.rigidbody.isKinematic = false;
+
+		var charMotor : CharacterMotor = this.occupantCharacter.GetComponent(CharacterMotor) as CharacterMotor;
+		var charController : CharacterController = this.occupantCharacter.GetComponent(CharacterController) as CharacterController;
+		if (charMotor) { charMotor.SetMotorActive(false); }
+		if (charController) { charController.detectCollisions = false; }
+	}
+
+	@RPC
+	public function Depart(id : NetworkViewID) {
+		if (this.occupantNetView.viewID == id) {
+			var charMotor : CharacterMotor = this.occupantCharacter.GetComponent(CharacterMotor) as CharacterMotor;
+			var charController : CharacterController = this.occupantCharacter.GetComponent(CharacterController) as CharacterController;
+			if (charMotor) {
+				charMotor.movement.velocity = this.rigidbody.velocity;
+				charMotor.SetMotorActive(true);
+			}
+			if (charController) {
+				charController.detectCollisions = true;
+			}
+
+			this.rigidbody.isKinematic = true;
+
+			this.occupantCharacter.transform.parent = null;
+			this.occupantCharacter.transform.rotation = Quaternion.Euler(0, this.occupantCharacter.transform.rotation.eulerAngles.y, 0);
+			if (this.occupantCharacter.transform.position.y < 0.5) {
+				this.occupantCharacter.transform.position.y = 0.5; // hack to avoid placing the player beneath the ground
+			}
+
+			this.occupantNetView = null;
+			this.occupantCharacter = null;
+			this.axes = Vector2.zero;
 		}
 	}
 }
