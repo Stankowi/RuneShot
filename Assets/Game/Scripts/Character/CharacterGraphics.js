@@ -10,19 +10,3 @@ function attachCharacterNetwork(networkPlayer : NetworkPlayer) {
         }
     }
 }
-
-@RPC
-function StartSendingInput(id : NetworkViewID) {
-	var fps : FPSInputController = this.GetComponentInParent(FPSInputController) as FPSInputController;
-	if (fps) {
-		fps.StartSendingInput(NetworkView.Find(id));
-	}
-}
-
-@RPC
-function StopSendingInput(id : NetworkViewID) {
-	var fps : FPSInputController = this.GetComponentInParent(FPSInputController) as FPSInputController;
-	if (fps) {
-		fps.StopSendingInput(NetworkView.Find(id));
-	}
-}
