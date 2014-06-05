@@ -42,9 +42,9 @@ class Vehicle extends MonoBehaviour {
 	function FixedUpdate() {
 		this.motorSpeed = -this.axes.y * this.speedRange;
 		this.steerAngle = this.axes.x * this.steeringRange;
-		this.rigidbody.centerOfMass = Vector3(0, 0, this.motorSpeed / this.speedRange); // hack to avoid rolling the truck over too often
+		this.rigidbody.centerOfMass = Vector3(0, 0, this.motorSpeed / this.speedRange); // hack to avoid rolling the truck over too often.  (could be improved by a stablizer bar)
 		if (this.transform.position.y < -0.1) {
-			this.transform.position.y = -0.1; // hack to work around how wheelcolliders sometimes allow the truck to fall through collision meshes
+			this.transform.position.y = -0.1; // hack to work around how wheelcolliders sometimes allow the truck to fall through collision meshes (unknown why this is happening at all)
 		}
 		this.UpdateSteering();
 		this.UpdateMotors();
@@ -140,8 +140,8 @@ class Vehicle extends MonoBehaviour {
 
 			this.occupantCharacter.transform.parent = null;
 			this.occupantCharacter.transform.rotation = Quaternion.Euler(0, this.occupantCharacter.transform.rotation.eulerAngles.y, 0);
-			if (this.occupantCharacter.transform.position.y < 0.5) {
-				this.occupantCharacter.transform.position.y = 0.5; // hack to avoid placing the player beneath the ground
+			if (this.occupantCharacter.transform.position.y < 1) {
+				this.occupantCharacter.transform.position.y = 1; // hack to avoid placing the player beneath the ground
 			}
 
 			this.occupantNetView = null;
