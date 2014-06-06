@@ -83,12 +83,7 @@ function Update () {
         if (Physics.Raycast(projRay, hit, 1.0)) {
             var vehicle : Vehicle = hit.transform.gameObject.GetComponent(Vehicle) as Vehicle;
             if (vehicle) {
-            	var id : NetworkViewID = this.GetComponentInChildren(CharacterGraphics).networkView.viewID;
-            	if (Network.connections.Length != 0) {
-            		vehicle.networkView.RPC("BoardOrDepart", RPCMode.Server, id);
-            	} else {
-            		vehicle.BoardOrDepart_SinglePlayer(id);
-            	}
+            	vehicle.BoardOrDepart(this.GetComponentInChildren(CharacterServerSide).networkView.viewID);
             }
         }
     }

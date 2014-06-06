@@ -13,6 +13,7 @@ class Vehicle extends MonoBehaviour {
 	private var readSinglePlayerInput : boolean = false;
 
 	private var occupantNetView : NetworkView;
+	private var occupantNetPlayer : NetworkPlayer;
 	private var occupantCharacter : GameObject;
 
 	public var driverDoor : Transform;
@@ -46,6 +47,12 @@ class Vehicle extends MonoBehaviour {
 		if (this.transform.position.y < -0.1) {
 			this.transform.position.y = -0.1; // hack to work around how wheelcolliders sometimes allow the truck to fall through collision meshes (unknown why this is happening at all)
 		}
+		if (this.occupantCharacter) {
+			var occupantHealth : Health = ComponentUtil.GetComponentInHierarchy(this.occupantCharacter, Health) as Health;
+			if (occupantHealth.GetHealth() <= 0) {
+				this.BoardOrDepart(this.occupantNetView.viewID);
+			}
+		}
 		this.UpdateSteering();
 		this.UpdateMotors();
 	}
@@ -71,6 +78,18 @@ class Vehicle extends MonoBehaviour {
 	function OnSerializeNetworkView(stream : BitStream, info : NetworkMessageInfo) {
 		stream.Serialize(this.motorSpeed);
 		stream.Serialize(this.steerAngle);
+		stream.Serialize(this.occupantNetPlayer);
+	}
+
+	function OnPlayerDisconnected(player : NetworkPlayer) {
+		if(Network.isServer && this.occupantNetPlayer == player) {
+			this.rigidbody.isKinematic = true;
+			this.occupantNetView = null;
+			Destroy(this.occupantCharacter);
+			this.occupantCharacter = null;
+			this.occupantNetPlayer = Network.player; // null is invalid for NetworkPlayer type, so just set it to the server's "player"
+			this.axes = Vector2.zero;
+		}
 	}
 
 	@RPC
@@ -80,8 +99,7 @@ class Vehicle extends MonoBehaviour {
 		}
 	}
 
-	@RPC
-	function BoardOrDepart_SinglePlayer(id : NetworkViewID) {
+	function BoardOrDepart(id : NetworkViewID) {
 		if (Network.connections.Length == 0) {
 			if (!this.occupantNetView) {
 				this.Board(id);
@@ -90,22 +108,36 @@ class Vehicle extends MonoBehaviour {
 				this.Depart(id);
 				this.readSinglePlayerInput = false;
 			}
+		} else {
+    		this.networkView.RPC("BoardOrDepart_Server", RPCMode.Server, id);
 		}
 	}
 
 	@RPC
-	function BoardOrDepart(id : NetworkViewID, info : NetworkMessageInfo) {
+	function BoardOrDepart_Server(id : NetworkViewID, info : NetworkMessageInfo) {
 		if (Network.isServer) {
 			if (!this.occupantNetView) {
-				this.Board(id);
-				this.networkView.RPC("Board", RPCMode.OthersBuffered, id);
-				NetworkView.Find(id).RPC("StartSendingInput", info.sender, this.networkView.viewID);
+				this.Board_Server(id, info.sender);
 			} else if (this.occupantNetView.viewID == id) {
-				this.Depart(id);
-				this.networkView.RPC("Depart", RPCMode.OthersBuffered, id);
-				NetworkView.Find(id).RPC("StopSendingInput", info.sender, this.networkView.viewID);
+				this.Depart_Server(id, info.sender);
 			}
 		}
+	}
+
+	@RPC
+	function Board_Server(id : NetworkViewID, player : NetworkPlayer) {
+		this.Board(id);
+		this.occupantNetPlayer = player;
+		this.networkView.RPC("Board", RPCMode.OthersBuffered, id);
+		NetworkView.Find(id).RPC("StartSendingInput", player, this.networkView.viewID);
+	}
+
+	@RPC
+	function Depart_Server(id : NetworkViewID, player : NetworkPlayer) {
+		this.Depart(id);
+		this.occupantNetPlayer = Network.player;
+		this.networkView.RPC("Depart", RPCMode.OthersBuffered, id);
+		NetworkView.Find(id).RPC("StopSendingInput", player, this.networkView.viewID);
 	}
 
 	@RPC

@@ -308,6 +308,11 @@ private function UpdateFunction () {
         movingPlatform.activeGlobalRotation = tr.rotation;
         movingPlatform.activeLocalRotation = Quaternion.Inverse(movingPlatform.activePlatform.rotation) * movingPlatform.activeGlobalRotation; 
 	}
+
+	// keep player in-bounds.  may want to cause damage/death here if "bottomless pit" levels are added in the future
+	if (tr.position.y < -2) {
+		tr.position.y = 1;
+	}
 }
 
 function FixedUpdate () {
