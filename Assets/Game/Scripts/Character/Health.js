@@ -99,7 +99,16 @@ function Die(damage: int, attacker : GameObject) {
     var network = ComponentUtil.GetComponentInHierarchy(gameObject,CharacterNetwork);
     if (network != null) {
         if(Network.connections.Length > 0 && gameObject.networkView != null) {
+            var ownerNetViewID : NetworkViewID;
             var projectile: Weapon = ComponentUtil.GetComponentInHierarchy(attacker,typeof(Weapon)) as Weapon;
+            if (projectile) {
+            	ownerNetViewID = projectile.GetOwnerNetworkID();
+            } else {
+				var ownerCN : CharacterNetwork = ComponentUtil.GetComponentInHierarchy(attacker, typeof(CharacterNetwork)) as CharacterNetwork;
+				if (ownerCN) {
+					ownerNetViewID = ownerCN.networkView.viewID;
+				}
+            }
             network.gameObject.networkView.RPC("DieRemote", 
                                         RPCMode.AllBuffered,
                                         Network.player, 
@@ -108,7 +117,7 @@ function Die(damage: int, attacker : GameObject) {
                                         gameObject.transform.root.rotation, 
                                         damage,
                                         attacker.transform.position, 
-                                        projectile.GetOwnerNetworkID());        
+                                        ownerNetViewID);        
         }
         else {
             network.Die(   gameObject.transform.root.position,
@@ -118,8 +127,6 @@ function Die(damage: int, attacker : GameObject) {
         }
     }
     
-    
-
     // when the player dies, disable his controls and switch to the "death camera"
     if (player != null) {
         ResetHealth();

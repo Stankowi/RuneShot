@@ -76,6 +76,14 @@ public function SetLastKilledBy(killer: String){
 }
 
 public function Die(position : Vector3, rotation : Quaternion, damage: int, attackerPos: Vector3) {
+    var vehicle : Vehicle = ComponentUtil.GetComponentInHierarchy(gameObject, Vehicle);
+    if (vehicle) {
+    	var subChar = ComponentUtil.GetComponentInHierarchy(gameObject,CharacterServerSide) as CharacterServerSide;
+    	if (subChar) {
+    		vehicle.BoardOrDepart(subChar.networkView.viewID);
+    	}
+    }
+
     SpawnRagdoll(position, rotation, damage, attackerPos);
     EnableDeathCam();
     keyInventory.clearKeys();
@@ -90,7 +98,7 @@ public function Die(position : Vector3, rotation : Quaternion, damage: int, atta
 }
 
 @RPC
-public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rotation : Quaternion, damage: int, attackerPos: Vector3, attackerID: NetworkViewID) {
+public function DieRemote(networkPlayer: NetworkPlayer, position : Vector3, rotation : Quaternion, damage: int, attackerPos: Vector3, attackerID: NetworkViewID, info : NetworkMessageInfo) {
     var attacker: GameObject = null;
     var attackerNV = NetworkView.Find(attackerID);
     if (attackerNV != null)
@@ -167,7 +175,12 @@ function SpawnRagdoll(position : Vector3, rotation : Quaternion, damage: int, at
 
 function EnableDeathCam() {
     // Network players (and the local player) need to disable the character graphic while the character is dead.
-    var renderers = transform.root.GetComponentsInChildren(Renderer);
+	var charRoot : Transform = transform.root;
+	var vehicle = transform.root.GetComponent(Vehicle);
+    if (vehicle) {
+    	charRoot = vehicle.driverSeat; // workaround - don't make the vehicle disappear if its driver dies
+    }
+    var renderers = charRoot.GetComponentsInChildren(Renderer);
     for(var renderIndex = 0; renderIndex < renderers.Length; renderIndex++) {
         var renderer : Renderer = renderers[renderIndex] as Renderer;
         if(!renderer.CompareTag("Flag")) {
