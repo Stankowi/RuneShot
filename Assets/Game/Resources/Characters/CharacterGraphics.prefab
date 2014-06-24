@@ -740,7 +740,7 @@ GameObject:
   - 136: {fileID: 13600000}
   m_Layer: 14
   m_Name: CharacterGraphics
-  m_TagString: Player
+  m_TagString: character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2526,6 +2526,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f4e8fc83b9bfe54cb1ee671592a9dfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  impactDamageThreshold: 10
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1

@@ -129,7 +129,8 @@ function Die(damage: int, attacker : GameObject) {
     
     // when the player dies, disable his controls and switch to the "death camera"
     if (player != null) {
-        ResetHealth();
+    	//Reset health when player respawns, not when player dies
+        //ResetHealth();
         
         var deathCam = transform.root.FindChild(PlayerDeathCamera.PrefabName());
         if(deathCam != null) {

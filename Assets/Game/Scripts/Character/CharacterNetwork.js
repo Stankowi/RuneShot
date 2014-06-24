@@ -164,7 +164,10 @@ function Respawn() {
     if ( weapons ) {
         weapons.ResetInventory();
     }
-
+	//TODO: reset health here
+	var health = ComponentUtil.GetComponentInHierarchy(localPlayer,"Health") as Health;
+	health.ResetHealth();
+	
     showKiller = false;
     lastKilledBy = "";
 }

@@ -2,8 +2,8 @@
 // needs to be a globally (globe -> earth) unique name for this game
 var gameName: String = "2013 RuneShot Game Jam";
 var maxNPCs: int = 8;
-var minSpawnTime: float = 4.0f;
-var maxSpawnTime: float = 8.0f;
+var minSpawnTime: float = 2.0f;
+var maxSpawnTime: float = 3.0f;
 
 private var hostData: HostData[];
 private var refreshing: boolean;
