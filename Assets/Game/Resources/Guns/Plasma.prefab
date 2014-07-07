@@ -14,7 +14,7 @@ GameObject:
   - 148: {fileID: 14800000}
   - 114: {fileID: 11400002}
   m_Layer: 0
-  m_Name: BlackHole
+  m_Name: Plasma
   m_TagString: Untagged
   m_Icon: {fileID: -1016138426, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -85,7 +85,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f81ef57397695143a425f2381a1468d, type: 3}
+  m_Script: {fileID: 11500000, guid: e6278197a49e50b429b6689466545718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   launchingPlayer: {fileID: 0}
