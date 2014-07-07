@@ -72,12 +72,16 @@ function Update () {
             wpns.EndPowerCalc();
         }
         
+        if (Input.GetMouseButtonDown(1)) {
+            wpns.SecondaryTrigger();
+        }
+        
         if (Input.GetKeyUp(KeyCode.F)) {
             wpns.ToggleWeapon();
         }
     }
 
-    if (Input.GetButtonDown("Fire2")) {
+    if (Input.GetKeyDown(KeyCode.E)) {
         var projRay : Ray = Camera.main.ViewportPointToRay(Vector3(0.5, 0.5, 0));
         var hit : RaycastHit;
         if (Physics.Raycast(projRay, hit, 1.0)) {

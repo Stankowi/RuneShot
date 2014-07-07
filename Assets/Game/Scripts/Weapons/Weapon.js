@@ -87,11 +87,11 @@ class Weapon extends MonoBehaviour {
 	   	
         gun = GameObject.Instantiate(gunPrefab, cam.transform.position, Quaternion(0.0, 0.0, 0.0, 0.0));
         gun.AddComponent("Animation");
+        gun.animation.AddClip(weaponBobAnimationClip, "WeaponBob");
         gun.name = "WeaponModel";
         gun.transform.parent = cam.transform;
         gun.transform.localPosition = GetGunOffset();
         gun.transform.localRotation = GetGunRotation();
-        gun.animation.AddClip(weaponBobAnimationClip, "WeaponBob");
         return gun;
     }
     
