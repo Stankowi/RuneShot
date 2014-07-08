@@ -108,4 +108,8 @@ class Laser extends Weapon {
             Physics.IgnoreCollision(launchingPlayer.collider,gameObject.collider);
         }
     }
+    
+    function SecondaryTrigger(position: Vector3, facing: Vector3) {
+        return null;
+    }
 }

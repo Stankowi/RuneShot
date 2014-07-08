@@ -115,4 +115,8 @@ class BouncyGranade extends Weapon {
         // The easiest way to accomplish this is to tell Physics to ignore collision between the player and the grenade.
         Physics.IgnoreCollision(launchingPlayer.collider,gameObject.collider);
     }
+    
+    function SecondaryTrigger(position: Vector3, facing: Vector3) {
+        return null;
+    }
 }

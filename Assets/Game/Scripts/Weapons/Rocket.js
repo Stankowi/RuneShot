@@ -83,3 +83,7 @@ function Trigger(launchingPlayer: GameObject, facing: Vector3, pressDuration: in
     rigidbody.useGravity=false;
     rigidbody.AddRelativeForce(Vector3(0,0,1000));
 }
+
+function SecondaryTrigger(position: Vector3, facing: Vector3) {
+    return null;
+}

@@ -249,6 +249,24 @@ function TriggerNonProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, f
     weaponDesc.Component(weapon).Trigger(gameObject.transform.root.gameObject, facing, pressDuration);
 }
 
+//@RPC
+//function SecondaryTriggerRemote(player: NetworkPlayer, weaponKey: String, position: Vector3, facing: Vector3, pressDuration: int){
+//
+//    SecondaryTrigger(weaponKey, position, facing, pressDuration);
+//    
+//}
+
+function SecondaryTrigger() {
+
+    var weapon: Weapon = GetCurrentWeaponObj();
+    if (weapon != null) {
+        weaponPos = GetCurrentWeaponObj().GetProjectileOrigin();
+    }
+    var facing: Vector3 = GetFacingVector(weaponPos);
+    var weaponDesc: WeaponDesc = weaponList[GetCurrentWeaponListKey()];
+    weaponDesc.Component(weaponDesc.obj).SecondaryTrigger(gameObject.transform.root.gameObject, weaponPos, facing);
+}
+
 function GetFacingVector(position: Vector3) {
     if (Camera.main != null)
     {

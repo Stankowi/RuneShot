@@ -1,4 +1,6 @@
-﻿class Plasma extends Weapon {
+﻿var secondaryProjectile: Transform;
+
+class Plasma extends Weapon {
     private var collisions: int = 0;
     private var explodeAt: int = 0;
     private var triggered: boolean = false;
@@ -13,6 +15,9 @@
     var normalDamage: int = 30;
     var critDamage: int = 85;
     var damageRadius: float = 1.25;
+    
+    var SecondaryFireCoolDown: int = 5;
+    var SecondaryFireAvailable: boolean = true;
     
 	function GetModelLoc() {
 		return gunModel;
@@ -40,9 +45,6 @@
     
     function GetDamageRadius() {
         return damageRadius;
-    }
-
-    function Start() {
     }
 
     function Update() {
@@ -98,12 +100,33 @@
         gameObject.transform.forward = facing;
 
         rigidbody.useGravity=false;
-        rigidbody.AddRelativeForce(Vector3(0,0,2500));
+        rigidbody.AddRelativeForce(Vector3(0,0,3000));
         
         // The grenade should not collide with the player that spawns it until it is safely outside that player.
         // The easiest way to accomplish this is to tell Physics to ignore collision between the player and the grenade.
         if (launchingPlayer.collider != null) {
             Physics.IgnoreCollision(launchingPlayer.collider,gameObject.collider);
         }
+    }
+    
+    function SecondaryTrigger(launchingPlayer: GameObject, position: Vector3, facing: Vector3) {
+        if(SecondaryFireAvailable) {
+            SecondaryFireAvailable = false;
+            Invoke("EnableSecondaryFire", SecondaryFireCoolDown);
+	        var rot = Quaternion.FromToRotation(Camera.main.transform.forward, facing);
+	        this.launchingPlayer = launchingPlayer;
+	        projectile = Instantiate(secondaryProjectile, position, rot);
+	        projectile.transform.forward = facing;
+	        
+	        projectile.rigidbody.AddRelativeForce(Vector3(0,0,1000));
+	        
+	        if (launchingPlayer.collider != null) {
+	            Physics.IgnoreCollision(launchingPlayer.collider,projectile.collider);
+	        }
+        }
+    }
+    
+    function EnableSecondaryFire() {
+        SecondaryFireAvailable = true;
     }
 }
