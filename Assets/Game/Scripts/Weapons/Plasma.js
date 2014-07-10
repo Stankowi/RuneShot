@@ -115,7 +115,7 @@ class Plasma extends Weapon {
             Invoke("EnableSecondaryFire", SecondaryFireCoolDown);
 	        var rot = Quaternion.FromToRotation(Camera.main.transform.forward, facing);
 	        this.launchingPlayer = launchingPlayer;
-	        projectile = Instantiate(secondaryProjectile, position, rot);
+	        projectile = NetworkUtil.Instantiate(secondaryProjectile, position, rot, NetworkGroup.CharacterNetwork);
 	        projectile.transform.forward = facing;
 	        
 	        projectile.rigidbody.AddRelativeForce(Vector3(0,0,1000));

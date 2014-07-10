@@ -17,23 +17,27 @@ function OnCollisionEnter(collision: Collision) {
     collider.enabled = false;
     
     if(other.tag == "Player" || other.tag == "NPC") {
-        var blast = Instantiate(smallExplosion, transform.position, Quaternion.identity);
-        Destroy(gameObject);
-    } else if (other.tag == "plasma") {
-        var biggerBlast = Instantiate(bigExplosion, transform.position, Quaternion.identity);
-        var blackHole = Instantiate(blackHole, transform.position, Quaternion.identity);
-        Destroy(gameObject);
-    } else {
+        var blast = NetworkUtil.Instantiate(smallExplosion, transform.position, Quaternion.identity, NetworkGroup.Explosion);
         var networkChar = ComponentUtil.GetComponentInHierarchy(collision.gameObject,typeof(CharacterNetwork)) as CharacterNetwork;
+        Debug.Log("Got network char");
         if ( networkChar) {
             var motor:CharacterMotor = collision.GetComponent(CharacterMotor);
+            Debug.Log("Got char motor");
             if (motor) {
+                Debug.Log("Ready to calculate effect");
                 var dir: Vector3 = collision.gameObject.transform.position - transform.position;
                 var newVelocity: Vector3 = dir.normalized * 50.0f;
                 motor.SetVelocity(newVelocity);
+                Debug.Log("Should have created the effect");
             }
         }
-        var explosion = Instantiate(smallExplosion, transform.position, Quaternion.identity);
+        Destroy(gameObject);
+    } else if (other.tag == "plasma") {
+        var biggerBlast = NetworkUtil.Instantiate(bigExplosion, transform.position, Quaternion.identity, NetworkGroup.Explosion);
+        var blackHole = NetworkUtil.Instantiate(blackHole, transform.position, Quaternion.identity, NetworkGroup.Explosion);
+        Destroy(gameObject);
+    } else {
+        var explosion = NetworkUtil.Instantiate(smallExplosion, transform.position, Quaternion.identity, NetworkGroup.Explosion);
         Destroy(gameObject);    
     }
 }

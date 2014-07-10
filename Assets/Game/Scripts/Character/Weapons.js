@@ -79,7 +79,7 @@ function ResetInventory(){
     AddWeaponToInventory("laser");
     AddWeaponToInventory("plasma");
     AddWeaponToInventory("bouncyGranade");
-    //AddWeaponToInventory("rocket");
+    AddWeaponToInventory("rocket");
     
     EquipWeapon(weaponList["laser"]);
 }
@@ -249,12 +249,12 @@ function TriggerNonProjectileWeapon(weaponDesc: WeaponDesc, position: Vector3, f
     weaponDesc.Component(weapon).Trigger(gameObject.transform.root.gameObject, facing, pressDuration);
 }
 
-//@RPC
-//function SecondaryTriggerRemote(player: NetworkPlayer, weaponKey: String, position: Vector3, facing: Vector3, pressDuration: int){
-//
-//    SecondaryTrigger(weaponKey, position, facing, pressDuration);
-//    
-//}
+@RPC
+function SecondaryTriggerRemote(player: NetworkPlayer, weaponDesc, weaponPos, facing){
+
+    weaponDesc.Component(weaponDesc.obj).SecondaryTrigger(gameObject.transform.root.gameObject, weaponPos, facing);
+    
+}
 
 function SecondaryTrigger() {
 
@@ -264,6 +264,7 @@ function SecondaryTrigger() {
     }
     var facing: Vector3 = GetFacingVector(weaponPos);
     var weaponDesc: WeaponDesc = weaponList[GetCurrentWeaponListKey()];
+
     weaponDesc.Component(weaponDesc.obj).SecondaryTrigger(gameObject.transform.root.gameObject, weaponPos, facing);
 }
 

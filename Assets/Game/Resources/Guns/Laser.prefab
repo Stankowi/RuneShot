@@ -16,7 +16,7 @@ GameObject:
   - 120: {fileID: 12000000}
   m_Layer: 0
   m_Name: Laser
-  m_TagString: Untagged
+  m_TagString: laser
   m_Icon: {fileID: -1016138426, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,6 +32,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!54 &5400000
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -59,6 +60,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   launchingPlayer: {fileID: 0}
+  criticalHitPercent: .300000012
+  normalDamage: 25
+  critDamage: 75
+  damageRadius: 1.25
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -90,9 +95,8 @@ LineRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayer: 0
-  m_SortingOrder: 0
   m_SortingLayerID: 0
+  m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 20}
