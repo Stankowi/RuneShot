@@ -17,20 +17,17 @@ function OnCollisionEnter(collision: Collision) {
     collider.enabled = false;
     
     if(other.tag == "Player" || other.tag == "NPC") {
+          // for some reason this is not working ...
+//        var networkChar = ComponentUtil.GetComponentInHierarchy(other,typeof(CharacterNetwork)) as CharacterNetwork;
+//        if ( networkChar) {
+//            var motor:CharacterMotor = collision.GetComponent(CharacterMotor);;
+//            if (motor) {
+//                var dir: Vector3 = collision.gameObject.transform.position - transform.position;
+//                var newVelocity: Vector3 = dir.normalized * 50.0f;
+//                motor.SetVelocity(newVelocity);
+//            }
+//        }
         var blast = NetworkUtil.Instantiate(smallExplosion, transform.position, Quaternion.identity, NetworkGroup.Explosion);
-        var networkChar = ComponentUtil.GetComponentInHierarchy(collision.gameObject,typeof(CharacterNetwork)) as CharacterNetwork;
-        Debug.Log("Got network char");
-        if ( networkChar) {
-            var motor:CharacterMotor = collision.GetComponent(CharacterMotor);
-            Debug.Log("Got char motor");
-            if (motor) {
-                Debug.Log("Ready to calculate effect");
-                var dir: Vector3 = collision.gameObject.transform.position - transform.position;
-                var newVelocity: Vector3 = dir.normalized * 50.0f;
-                motor.SetVelocity(newVelocity);
-                Debug.Log("Should have created the effect");
-            }
-        }
         Destroy(gameObject);
     } else if (other.tag == "plasma") {
         var biggerBlast = NetworkUtil.Instantiate(bigExplosion, transform.position, Quaternion.identity, NetworkGroup.Explosion);

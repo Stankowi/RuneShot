@@ -20,7 +20,6 @@ function OnTriggerEnter(other: Collider) {
         if (motor) {
             var dir: Vector3 = other.gameObject.transform.position - transform.position;
             var newVelocity: Vector3 = dir.normalized * -1.0f * forceMultiplier;
-            Debug.Log(newVelocity);
             motor.SetVelocity(newVelocity);
         }
     }
